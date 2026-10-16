@@ -18,6 +18,10 @@ class InstallTests(unittest.TestCase):
             self.assertTrue((destination / "SKILL.md").is_file())
             client = destination / "scripts" / "chipseeker_remote.py"
             self.assertTrue(client.is_file())
+            self.assertTrue((destination / "scripts" / "research_output.py").is_file())
+            self.assertTrue((destination / "assets" / "report.css").is_file())
+            self.assertTrue((destination / "assets" / "chipseeker_logo.jpg").is_file())
+            self.assertTrue((destination / "references" / "search-strategy.md").is_file())
             result = subprocess.run([sys.executable, str(client), "--help"], capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn("collect", result.stdout)

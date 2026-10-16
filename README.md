@@ -1,29 +1,29 @@
 # ChipSeeker UltraSearch
 
-让你自己的 Codex 或 Claude Code 驱动 [ChipSeeker](https://chipseeker.online)，扩充检索关键词、多轮查询、去重筛选，并把论文链接和报告保存到指定文件夹。
+Let your own Codex or Claude Code drive [ChipSeeker](https://chipseeker.online): interpret a research direction, expand missing terminology, run adaptive literature searches, screen and deduplicate results, and save linked Markdown and offline HTML reports.
 
-把下面这句话交给 AI 即可开始：
+## Connect With One Prompt
 
-> 请从 https://github.com/Yixuan-Miao/ChipSeeker-UltraSearch 安装 UltraSearch Skill，使用 https://chipseeker.online 和我的 API key【你的密钥】连接芯寻并检查余额。
+Send your agent:
 
-连接完成后，例如：
+> Install the ChipSeeker UltraSearch Skill from https://github.com/Yixuan-Miao/ChipSeeker-UltraSearch, connect to https://chipseeker.online using my API key [YOUR_KEY], and check my account balance.
 
-> UltraSearch 用于 quantum readout 的 cryogenic SiGe LNA，重点覆盖 4–8 GHz，结果放到 D:\Research\Cryogenic_LNA。
+Then, for example:
 
-没有 API key 也可以提供注册邮箱。AI 会发送邮件验证码，询问六位验证码后连接同一个邮箱账户。
+> UltraSearch pulsed cryogenic LNAs for superconducting-qubit readout. Save the results under D:\Research. Prioritize measured circuits, but retain clearly identified measurement-method papers when directly useful.
 
-## 给 Codex / Claude Code 的安装说明
+Email verification is available without a key: provide your registered email, then give the agent the six-digit verification code when asked. Never post real keys in public issues, screenshots or example prompts.
 
-当用户要求安装或连接时，直接完成以下步骤，不要把下载、解压或配置工作交回用户。
+## Agent Installation Instructions
 
-1. 使用 Git 克隆本仓库，或下载本仓库的 ZIP 并解压到本地工具目录；无需克隆芯寻服务代码或下载论文数据库。
-2. 找到 Python 3，运行 `python install.py --client codex`。Claude Code 使用 `python install.py --client claude-code`。安装器只使用 Python 标准库，无需 `pip install`。
-3. 读取安装器输出路径下的 `SKILL.md`，并在当前会话直接遵循它；不要要求用户重新开启对话才能连接。
-4. 用安装后的 `scripts/chipseeker_remote.py` 配置用户提供的 key，验证账号及 API 余额。建议通过进程环境变量 `CHIPSEEKER_API_KEY` 传入密钥，再运行 `configure`；不要把密钥写入仓库、研究文件夹或打印到输出。
-5. 如果只提供邮箱，运行 `auth-send --email EMAIL`，向用户询问六位验证码，再运行 `auth-verify --email EMAIL --code CODE`。登录会取回已有的账户 key，不会重置它。
-6. 如果用户同时给了研究主题和文件夹，连接后直接继续检索；否则简洁告知连接结果和余额。
+When the user requests installation or connection, perform the work with the available tools rather than handing manual download steps back to them:
 
-用户明确要求安装时，可运行：
+1. Clone this repository, or obtain and extract its ZIP into a local tool directory. Do not clone the private service or download a paper database.
+2. Find Python 3 and run `python install.py --client codex`, or `--client claude-code`. The installer uses only the Python standard library.
+3. Read `SKILL.md` at the installed path and follow it in the current conversation. A new chat is not required to connect.
+4. Configure the bundled `scripts/chipseeker_remote.py` using the user-supplied key, preferably through process-scoped `CHIPSEEKER_API_KEY`, and check `quota`. Do not echo credentials or store them in the repository or research output.
+5. For email-only login, use `auth-send`, ask for the verification code, then use `auth-verify`. Retrieve the existing key; do not reset it.
+6. If a topic and output path were also supplied, follow the Skill's scope gate: search actionable directions; clarify overly broad topics first. Otherwise report connection status and balance briefly.
 
 ```text
 git clone https://github.com/Yixuan-Miao/ChipSeeker-UltraSearch.git
@@ -31,12 +31,20 @@ cd ChipSeeker-UltraSearch
 python install.py --client codex
 ```
 
-安装器默认目录：Codex 为 `~/.codex/skills/chipseeker-ultra-search`（也支持 `CODEX_HOME`）；Claude Code 为 `~/.claude/skills/chipseeker-ultra-search`。已有安装会先备份。通过 `--skills-dir PATH` 可指定其他 Skill 目录。
+Default locations are `~/.codex/skills/chipseeker-ultra-search` for Codex, respecting `CODEX_HOME`, and `~/.claude/skills/chipseeker-ultra-search` for Claude Code. Existing installations are backed up. Use `--skills-dir PATH` to choose another location.
 
-## 账号与计次
+## Accounts and Tokens
 
-每个注册邮箱只有一个有效 API key。登录网站的 API 页面可以复制或重置；充值由管理员直接记入邮箱账户。
+Each email has one active API key. Resetting the key invalidates the old key without changing the email-owned balance. Check live entitlement through the API rather than assuming it from a website membership name.
 
-每次成功的 Lite、Keyword 或 filtered-Lite 检索消耗 1 次 API 额度，包括零结果查询。失败、登录、余额查询、任务进度轮询及本地整理不扣次数。API 余额与网页会员权限分别管理。
+One UltraSearch Token pays for one successful Lite, Keyword or filtered-Lite API retrieval, including zero results. Abstract hydration is also a retrieval. Failed searches, authentication, quota checks, polling and local processing are free. An entire research session can use multiple Tokens; these are not language-model tokens. Account recharges and eligible one-time membership grants are administered by the service.
 
-UltraSearch 的扩词、补查、分析和报告由用户自己的 AI 执行。这个仓库提供远程客户端和 Skill，不包含芯寻服务代码、论文库或账户密钥。
+Your own AI performs query planning, expansion, screening and reporting. This public package contains a remote client and operating instructions, not the private service implementation, corpus or account secrets. The instructions are intentionally readable, not a security boundary.
+
+## Research and Outputs
+
+For broad prompts such as `ADC` or `CTLE`, the agent asks targeted questions until a useful subdirection emerges. An optional single Lite probe can help identify actual themes. Explicit software trials and broad overviews remain available as bounded, representative searches.
+
+For a scoped direction, the agent lays out distinct retrieval questions, learns new terms from titles and abstracts, and follows relevant leads. It does not equate paraphrase count, repeated top hits or an API candidate cap with completeness. Paper facts require source evidence; unknown or failed retrievals remain explicit.
+
+The requested path is a parent folder. Each run creates `芯寻_<concise-topic>` containing `结果报告.md`, `结果报告.html` and `检索数据/`. Chinese filenames and report defaults are intentional; the operational instructions are English. The self-contained HTML embeds the ChipSeeker logo and supports offline search, filtering and sorting. Source/PDF links still depend on network connectivity and source access rights. Raw JSON, checkpoints and screening records stay in the data subfolder.
