@@ -33,6 +33,8 @@ python install.py --client codex
 
 Default locations are `~/.codex/skills/chipseeker-ultra-search` for Codex, respecting `CODEX_HOME`, and `~/.claude/skills/chipseeker-ultra-search` for Claude Code. Existing installations are backed up. Use `--skills-dir PATH` to choose another location.
 
+To upgrade an existing installation, pull the latest `main` in this repository and rerun the installer for your client. The website does not automatically update an installed Skill. The account API key and search checkpoints are stored separately, so there is no need to reconnect or start a new search workspace.
+
 ## Accounts and Tokens
 
 Each email has one active API key. Resetting the key invalidates the old key without changing the email-owned balance. Check live entitlement through the API rather than assuming it from a website membership name.

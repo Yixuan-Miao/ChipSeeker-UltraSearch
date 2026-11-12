@@ -311,6 +311,29 @@ def _rank_paper(paper):
     }
 
 
+def _apply_rate_order(papers, searches):
+    targets = {s.get("target_rate_gbps") for s in searches
+               if s["purpose"] == "discovery" and s["status"] == "completed"}
+    if len(targets) != 1 or None in targets:
+        return
+    target = targets.pop()
+    slots = []
+    operating = []
+    comparisons = []
+    for position, paper in enumerate(papers):
+        evidence = {hit["rate_evidence"] for hit in paper["retrievals"] if "rate_evidence" in hit}
+        if len(evidence) == 1:
+            paper["target_rate_gbps"] = target
+            paper["rate_evidence"] = evidence.pop()
+            slots.append(position)
+            if paper["rate_evidence"] == "operating":
+                operating.append(paper)
+            else:
+                comparisons.append(paper)
+    for position, paper in zip(slots, operating + comparisons):
+        papers[position] = paper
+
+
 def merge_responses(responses, attempted):
     responses = list(responses)
     merged = {}
@@ -353,6 +376,13 @@ def merge_responses(responses, attempted):
         if status != "completed":
             (pending if status in {"pending", "queued", "running"} else failed).append(query_id)
             continue
+        target_rate = response.get("target_rate_gbps")
+        has_rate = (entry.get("purpose", "discovery") == "discovery"
+                    and isinstance(target_rate, str)
+                    and re.fullmatch(r"[0-9]+(?:\.[0-9]+)?", target_rate)
+                    and target_rate.strip("0."))
+        if has_rate:
+            searches[-1]["target_rate_gbps"] = target_rate
         last_quota = response.get("quota") or last_quota
         for item in response.get("results", []):
             raw_count += 1
@@ -364,25 +394,35 @@ def merge_responses(responses, attempted):
                     key = "doi:" + next(iter(candidates))
             if key not in merged:
                 merged[key] = dict(item)
+                merged[key].pop("rate_evidence", None)
+                merged[key].pop("target_rate_gbps", None)
                 merged[key]["retrievals"] = []
             target = merged[key]
             for field, value in item.items():
-                if field not in {"rank", "similarity", "retrievals", "abstract", "abstract_kind", "abstract_truncated"} and value and not target.get(field):
+                if field not in {"rank", "similarity", "retrievals", "abstract", "abstract_kind", "abstract_truncated",
+                                 "source_links", "rate_evidence", "target_rate_gbps"} and value and not target.get(field):
                     target[field] = value
+            links = dict(target.get("source_links") or {})
+            for name, url in (item.get("source_links") or {}).items():
+                if url and not links.get(name):
+                    links[name] = url
+            if links:
+                target["source_links"] = links
             if len(str(item.get("abstract", "") or "")) > len(str(target.get("abstract", "") or "")):
                 target["abstract"] = item["abstract"]
-                target["abstract_kind"] = item.get("abstract_kind", "source_abstract")
+                target["abstract_kind"] = item.get("abstract_kind", "")
                 target["abstract_truncated"] = item.get("abstract_truncated", False)
-            merged[key]["retrievals"].append(
-                {
-                    "query_id": query_id,
-                    "query_family": entry.get("query_family", ""),
-                    "mode": entry.get("mode", "lite"),
-                    "rank": item.get("rank"),
-                    "similarity": item.get("similarity"),
-                    "purpose": entry.get("purpose", "discovery"),
-                }
-            )
+            retrieval = {
+                "query_id": query_id,
+                "query_family": entry.get("query_family", ""),
+                "mode": entry.get("mode", "lite"),
+                "rank": item.get("rank"),
+                "similarity": item.get("similarity"),
+                "purpose": entry.get("purpose", "discovery"),
+            }
+            if has_rate and item.get("rate_evidence") in ("operating", "comparison"):
+                retrieval.update(target_rate_gbps=target_rate, rate_evidence=item["rate_evidence"])
+            target["retrievals"].append(retrieval)
     papers = list(merged.values())
     for paper in papers:
         paper["retrieval_count"] = len(paper["retrievals"])
@@ -391,6 +431,7 @@ def merge_responses(responses, attempted):
         )
         paper["ranking"] = _rank_paper(paper)
     papers.sort(key=lambda item: item["ranking"]["final_score"], reverse=True)
+    _apply_rate_order(papers, searches)
     return {
         "schema": "chipseeker-remote-collect/v1",
         "generated_at": datetime.now(timezone.utc).isoformat(),

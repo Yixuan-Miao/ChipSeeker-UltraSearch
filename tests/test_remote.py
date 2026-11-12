@@ -155,20 +155,78 @@ def test_metadata_enriches_paper_without_inflating_discovery_evidence():
     ]
     responses = [
         {"status": "completed", "_entry": entries[0], "result_count": 1,
-         "results": [{"title": "A LNA", "year": "2025", "doi": "", "similarity": .9}]},
+         "results": [{"title": "A LNA", "year": "2025", "doi": "", "similarity": .9,
+                      "source_links": {"publisher": "https://example.test/publisher"}}]},
         {"status": "completed", "_entry": entries[1], "result_count": 1,
          "results": [{"title": "A LNA", "year": "2025", "doi": "doi:10.1/a", "similarity": 1,
-                      "abstract": "Original source abstract.", "abstract_kind": "source_abstract", "abstract_truncated": False}]},
+                      "abstract": "Original source abstract.", "abstract_kind": "source_abstract", "abstract_truncated": False,
+                      "source_links": {"publisher": "https://example.test/alternate", "pdf": "https://example.test/paper.pdf"}}]},
     ]
     merged = remote.merge_responses(responses, entries)
     paper = merged["papers"][0]
     assert len(merged["papers"]) == 1
     assert paper["abstract"] == "Original source abstract."
+    assert paper["abstract_kind"] == "source_abstract"
     assert paper["abstract_truncated"] is False
+    assert paper["source_links"] == {"publisher": "https://example.test/publisher", "pdf": "https://example.test/paper.pdf"}
     assert paper["retrieval_family_count"] == 1
     assert paper["ranking"]["best_lite_similarity"] == .9
     assert merged["summary"]["successful_metadata_queries"] == 1
     assert merged["summary"]["discovery_raw_results"] == 1
+
+
+def test_enriched_abstract_without_provenance_is_not_claimed_as_source_abstract():
+    results = [
+        {"status": "completed", "_entry": {"id": "discover"},
+         "results": [{"title": "A LNA", "abstract_kind": "missing"}]},
+        {"status": "completed", "_entry": {"id": "metadata", "purpose": "metadata"},
+         "results": [{"title": "A LNA", "abstract": "Unattributed abstract text."}]},
+    ]
+    paper, = remote.merge_responses(results, [r["_entry"] for r in results])["papers"]
+    assert paper["abstract_kind"] == ""
+
+
+def _rate_results(query_id, target, hits, purpose="discovery", status="completed"):
+    response = {"_entry": {"id": query_id, "purpose": purpose}, "status": status,
+                "results": [{"title": name, "similarity": score, "rate_evidence": evidence}
+                            for name, score, evidence in hits],
+                "result_count": len(hits)}
+    if target is not None:
+        response["target_rate_gbps"] = target
+    return response
+
+
+def test_single_target_uses_only_discovery_evidence_and_retains_unjudged_slots():
+    hits = [("Reference A", .9, "comparison"), ("Unknown", .8, None),
+            ("Reference B", .7, "comparison"), ("Supported", .6, "operating"),
+            ("Measured", .5, "operating"), ("Unrelated", .4, None)]
+    results = [_rate_results("rate", "112", hits),
+               _rate_results("details", "224", [("Unknown", 1, "operating")], purpose="metadata"),
+               _rate_results("failed", None, [], status="failed")]
+    papers = remote.merge_responses(results, [r["_entry"] for r in results])["papers"]
+    assert [p["title"] for p in papers] == ["Supported", "Unknown", "Measured", "Reference A",
+                                            "Reference B", "Unrelated"]
+    assert papers[0]["ranking"]["best_lite_similarity"] == .6
+    assert papers[0]["rate_evidence"] == "operating" and papers[0]["target_rate_gbps"] == "112"
+    assert "rate_evidence" not in papers[1]
+
+
+@pytest.mark.parametrize("second_target", [None, "224", "unknown"])
+def test_untargeted_or_mixed_discovery_keeps_original_order(second_target):
+    results = [_rate_results("one", "112", [("Reference", .9, "comparison"), ("Measured", .7, "operating")]),
+               _rate_results("two", second_target, [])]
+    papers = remote.merge_responses(results, [r["_entry"] for r in results])["papers"]
+    assert [p["title"] for p in papers] == ["Reference", "Measured"]
+    assert all("rate_evidence" not in p for p in papers)
+
+
+def test_conflicting_annotations_keep_ambiguous_record_in_place():
+    results = [_rate_results("one", "112", [("Conflict", .9, "comparison"), ("Reference", .8, "comparison"),
+                                           ("Measured", .7, "operating")]),
+               _rate_results("two", "112", [("Conflict", .9, "operating")])]
+    papers = remote.merge_responses(results, [r["_entry"] for r in results])["papers"]
+    assert [p["title"] for p in papers] == ["Conflict", "Measured", "Reference"]
+    assert "rate_evidence" not in papers[0]
 
 
 def test_literal_only_results_do_not_get_fabricated_semantic_relevance():
