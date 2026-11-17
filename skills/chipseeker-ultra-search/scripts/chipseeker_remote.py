@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import copy
 import hashlib
 import ipaddress
 import json
@@ -334,6 +335,38 @@ def _apply_rate_order(papers, searches):
         papers[position] = paper
 
 
+_PUBLICATION_FIELDS = (
+    "title", "authors", "year", "online_year", "issue_year", "venue", "venue_name", "venue_tier",
+    "venue_quality", "publisher", "publication_type", "publication_status", "publication_evidence",
+    "published_online", "published_print", "publication_date", "volume", "issue", "pages",
+    "origin", "source_in_current_corpus", "primary_source", "source_url", "doi_link",
+    "pdf_link", "open_pdf_link", "local_pdf_path", "source_links", "abstract", "abstract_kind",
+    "abstract_truncated",
+)
+
+
+def _publication_source(item):
+    return {field: item[field] for field in ("doi", *_PUBLICATION_FIELDS)
+            if field in item and field not in {"abstract", "abstract_kind", "abstract_truncated"}}
+
+
+def _source_kind(item):
+    kind = str(item.get("publication_status") or item.get("publication_type") or "").strip().lower()
+    venue = str(item.get("venue") or item.get("venue_name") or "").strip().lower()
+    if kind in {"preprint", "posted-content", "submitted"} or re.search(r"arxiv|preprint|biorxiv|medrxiv", venue):
+        return "preprint"
+    if (kind in {"journal-article", "proceedings-article", "conference-paper"}
+            or venue not in {"", "other", "unknown", "unspecified"}):
+        # The API may only supply a venue; this is a merge preference, not verification.
+        return "publication"
+    return ""
+
+
+def _query_entry(entry, request):
+    return {**entry, **{key: request[key] for key in ("mode", "top_k", "years", "venues")},
+            "identity_lookup": request["mode"] == "keyword" and bool(request.get("dois") or request.get("exact_titles"))}
+
+
 def merge_responses(responses, attempted):
     responses = list(responses)
     merged = {}
@@ -368,6 +401,11 @@ def merge_responses(responses, attempted):
                 "http_status": response.get("http_status"),
                 "retry_not_before": response.get("_retry_not_before"),
                 "job_id": response.get("_client_job_id"),
+                "client_request_id": response.get("_client_request_id"),
+                "identity_lookup": entry.get("identity_lookup", False),
+                "years": entry.get("years"),
+                "venues": entry.get("venues") or [],
+                "top_k": entry.get("top_k", 100),
                 "candidate_count": response.get("candidate_count"),
                 "matched_count": response.get("matched_count"),
                 "possibly_truncated": int(response.get("result_count", 0) or 0) >= int(entry.get("top_k", 100)),
@@ -393,25 +431,40 @@ def merge_responses(responses, attempted):
                 if len(candidates) == 1:
                     key = "doi:" + next(iter(candidates))
             if key not in merged:
-                merged[key] = dict(item)
+                merged[key] = copy.deepcopy(item)
                 merged[key].pop("rate_evidence", None)
                 merged[key].pop("target_rate_gbps", None)
                 merged[key]["retrievals"] = []
             target = merged[key]
+            sources = target.setdefault("publication_sources", [])
+            for source in [*(item.get("publication_sources") or []), _publication_source(item)]:
+                if source and source not in sources:
+                    sources.append(source)
+            current_kind, incoming_kind = _source_kind(target), _source_kind(item)
+            different_sources = {current_kind, incoming_kind} == {"publication", "preprint"}
+            if different_sources and incoming_kind == "publication":
+                for field in _PUBLICATION_FIELDS:
+                    if field in item:
+                        target[field] = copy.deepcopy(item[field])
+                    else:
+                        target.pop(field, None)
             for field, value in item.items():
+                if different_sources and field in _PUBLICATION_FIELDS:
+                    continue
                 if field not in {"rank", "similarity", "retrievals", "abstract", "abstract_kind", "abstract_truncated",
-                                 "source_links", "rate_evidence", "target_rate_gbps"} and value and not target.get(field):
+                                 "source_links", "publication_sources", "rate_evidence", "target_rate_gbps"} and value and not target.get(field):
                     target[field] = value
-            links = dict(target.get("source_links") or {})
-            for name, url in (item.get("source_links") or {}).items():
-                if url and not links.get(name):
-                    links[name] = url
-            if links:
-                target["source_links"] = links
-            if len(str(item.get("abstract", "") or "")) > len(str(target.get("abstract", "") or "")):
-                target["abstract"] = item["abstract"]
-                target["abstract_kind"] = item.get("abstract_kind", "")
-                target["abstract_truncated"] = item.get("abstract_truncated", False)
+            if not different_sources:
+                links = dict(target.get("source_links") or {})
+                for name, url in (item.get("source_links") or {}).items():
+                    if url and not links.get(name):
+                        links[name] = url
+                if links:
+                    target["source_links"] = links
+                if len(str(item.get("abstract", "") or "")) > len(str(target.get("abstract", "") or "")):
+                    target["abstract"] = item["abstract"]
+                    target["abstract_kind"] = item.get("abstract_kind", "")
+                    target["abstract_truncated"] = item.get("abstract_truncated", False)
             retrieval = {
                 "query_id": query_id,
                 "query_family": entry.get("query_family", ""),
@@ -468,7 +521,7 @@ def _run_entry(entry, defaults, checkpoint_dir, retries):
     entry["id"] = query_id
     checkpoint = _checkpoint_path(checkpoint_dir, query_id) if checkpoint_dir else None
     request = normalize_request(entry, defaults)
-    entry["top_k"] = request["top_k"]
+    entry = _query_entry(entry, request)
     config = load_config()
     fingerprint = hashlib.sha256(json.dumps(
         {"request": request, "base_url": config["base_url"], "email": config.get("email", "")},
@@ -600,8 +653,7 @@ def command_collect(args):
     if any(entry.get("purpose", "discovery") not in {"discovery", "metadata"} for entry in entries):
         raise ValueError("purpose must be discovery or metadata.")
     defaults = dict(spec.get("defaults", {}))
-    for entry in entries:
-        normalize_request(entry, defaults)
+    entries = [_query_entry(entry, normalize_request(entry, defaults)) for entry in entries]
     workers = max(1, min(int(args.workers), 4, len(entries)))
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         futures = {executor.submit(_run_entry, entry, defaults, args.checkpoint_dir, args.retries): index for index, entry in enumerate(entries)}

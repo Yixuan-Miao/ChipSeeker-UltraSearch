@@ -1,0 +1,228 @@
+{
+  "generated_at": "2026-11-17",
+  "scope": "Cryogenic amplifier circuit review; evidence summaries are reviewer judgments grounded in the linked sources, not generated abstracts.",
+  "cases": [
+    {
+      "case_id": "wang-nature-interconnect",
+      "expected_decision": "system_contribution",
+      "paper": {
+        "title": "A wireless terahertz cryogenic interconnect that minimizes heat-to-information transfer",
+        "authors": [
+          "Jinchen Wang",
+          "Isaac Harris",
+          "Mohamed Ibrahim",
+          "Dirk Englund",
+          "Ruonan Han"
+        ],
+        "doi": "10.1038/s41928-025-01355-9",
+        "year": 2025,
+        "publication_date": "2025-03-10",
+        "venue_name": "Nature Electronics",
+        "primary_source": "https://www.nature.com/articles/s41928-025-01355-9",
+        "origin": "external_primary_source",
+        "review_evidence": {
+          "contribution": "system",
+          "relevance": "strong",
+          "measured_target": false,
+          "publisher": "Springer Nature",
+          "publication_type": "journal-article",
+          "readability": "source_abstract",
+          "evidence": [
+            {
+              "url": "https://www.nature.com/articles/s41928-025-01355-9",
+              "location": "Abstract; Figures 2–5; Author contributions",
+              "text": "The contribution is a 260-GHz wireless cryogenic interconnect using passive cold detection and backscatter. Its main experimental results concern the link and heat load. Amplifier design is not the primary contribution."
+            }
+          ],
+          "publication_evidence": [
+            {
+              "url": "https://api.crossref.org/works/10.1038/s41928-025-01355-9",
+              "location": "Crossref publisher-deposited record: title, publisher, type, published, published-print, published-online",
+              "text": "Nature Electronics 8, 426–436 (2025); version of record published 10 March 2025.",
+              "supporting_url": "https://www.nature.com/articles/s41928-025-01355-9",
+              "kind": "doi_registration",
+              "checked_at": "2026-11-17"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "enthoven-tcsi-dac",
+      "expected_decision": "system_contribution",
+      "paper": {
+        "title": "Cryo-CMOS Integrator-Based DAC for Scalable Biasing of Semiconductor Qubits",
+        "authors": [
+          "Luc Enthoven",
+          "Job van Staveren",
+          "Jiang Gong",
+          "Masoud Babaie",
+          "Fabio Sebastiano"
+        ],
+        "doi": "10.1109/TCSI.2026.3692714",
+        "year": 2026,
+        "venue_name": "IEEE Transactions on Circuits and Systems I: Regular Papers",
+        "primary_source": "https://research.tudelft.nl/en/publications/cryo-cmos-integrator-based-dac-for-scalable-biasing-of-semiconduc/",
+        "origin": "external_primary_source",
+        "review_evidence": {
+          "contribution": "other_circuit",
+          "relevance": "strong",
+          "measured_target": false,
+          "publisher": "IEEE",
+          "publication_type": "journal-article",
+          "readability": "source_abstract",
+          "evidence": [
+            {
+              "url": "https://research.tudelft.nl/en/publications/cryo-cmos-integrator-based-dac-for-scalable-biasing-of-semiconduc/",
+              "location": "Abstract",
+              "text": "The integrator and high-voltage output stage support a cryogenic DAC for biasing qubit electrodes. Reported resolution, noise and INL characterize the DAC. The target circuit contribution is a DAC, not an independent amplifier design."
+            }
+          ],
+          "publication_evidence": [
+            {
+              "url": "https://api.crossref.org/works/10.1109/TCSI.2026.3692714",
+              "location": "Crossref publisher-deposited record: title, publisher, type, published, published-print, published-online",
+              "text": "Final published IEEE TCAS-I article, volume 73 issue 10, pages 6614–6623 (2026).",
+              "supporting_url": "https://repository.tudelft.nl/record/uuid%3Aab708eb1-cebd-41dd-87e0-c98066b94e9f",
+              "kind": "doi_registration",
+              "checked_at": "2026-11-17"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "kleine-1994",
+      "expected_decision": "outside_window",
+      "paper": {
+        "title": "A low-noise CMOS preamplifier operating at 4.2 K",
+        "authors": [
+          "U. Kleine",
+          "J. Bieger",
+          "H. Seifert"
+        ],
+        "doi": "10.1109/4.297696",
+        "year": 1994,
+        "venue_name": "IEEE Journal of Solid-State Circuits",
+        "primary_source": "https://doi.org/10.1109/4.297696",
+        "origin": "external_primary_source",
+        "review_evidence": {
+          "contribution": "target_circuit",
+          "relevance": "strong",
+          "measured_target": true,
+          "publisher": "IEEE",
+          "publication_type": "journal-article",
+          "readability": "metadata_and_author_citation",
+          "evidence": [
+            {
+              "url": "https://backend.orbit.dtu.dk/ws/portalfiles/portal/170360214/FINAL_VERSION.pdf",
+              "location": "References, Kleine et al. (1994)",
+              "text": "The authors cite this dedicated 4.2-K preamplifier article as prior low-temperature amplifier work. Its age, rather than a topical mismatch, excludes it under this run's policy."
+            }
+          ],
+          "publication_evidence": [
+            {
+              "url": "https://api.crossref.org/works/10.1109/4.297696",
+              "location": "Crossref publisher-deposited record: title, publisher, type, published, published-print, published-online",
+              "text": "IEEE Journal of Solid-State Circuits article published in 1994.",
+              "supporting_url": "https://doi.org/10.1109/4.297696",
+              "kind": "doi_registration",
+              "checked_at": "2026-11-17"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "ibberson-icecs-2024",
+      "expected_decision": "system_contribution",
+      "paper": {
+        "title": "A Multi-Module Silicon-On-Insulator Chip Assembly Containing Quantum Dots and Cryogenic Radio-Frequency Readout Electronics",
+        "authors": [
+          "David J. Ibberson",
+          "James Kirkman",
+          "John J. L. Morton",
+          "M. Fernando Gonzalez-Zalba",
+          "Alberto Gomez-Saiz"
+        ],
+        "doi": "10.1109/ICECS61496.2024.10848854",
+        "year": 2024,
+        "repository_citation_year": 2025,
+        "venue_name": "2024 IEEE International Conference on Electronics, Circuits and Systems (ICECS)",
+        "primary_source": "https://discovery.ucl.ac.uk/id/eprint/10217980/",
+        "origin": "external_primary_source",
+        "review_evidence": {
+          "contribution": "system",
+          "relevance": "strong",
+          "measured_target": true,
+          "publisher": "IEEE",
+          "publication_type": "proceedings-article",
+          "readability": "source_abstract",
+          "evidence": [
+            {
+              "url": "https://discovery.ucl.ac.uk/id/eprint/10217980/",
+              "location": "Abstract",
+              "text": "The assembly contains LNA, SP8T and quantum-dot chiplets and reports measured LNA gain/noise. Its organizing contribution and final demonstration are the combined multi-module multiplexed readout. Actual LNA measurements do not make the amplifier the primary contribution."
+            }
+          ],
+          "publication_evidence": [
+            {
+              "url": "https://api.crossref.org/works/10.1109/ICECS61496.2024.10848854",
+              "location": "Crossref publisher-deposited record: title, publisher, type, published, published-print, published-online",
+              "text": "Formal IEEE ICECS proceedings contribution for the 18–20 November 2024 event. The repository citation uses 2025, recorded separately without asserting an online-publication date.",
+              "supporting_url": "https://discovery.ucl.ac.uk/id/eprint/10217980/",
+              "kind": "doi_registration",
+              "checked_at": "2026-11-17"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "mathewson-spie-2024",
+      "expected_decision": "source_priority",
+      "paper": {
+        "title": "Cryogenic High Linearity and Dynamic Range, C-Band Low Noise Amplifier for uMUX TES and CMB Readout Systems",
+        "authors": [
+          "Justin L. H. Mathewson",
+          "Eric L. Weeks",
+          "Richard M. Scott",
+          "Kaiwen Zheng",
+          "Chris Groppi",
+          "Philip Mauskopf",
+          "Hamdi Mani"
+        ],
+        "doi": "10.1117/12.3018029",
+        "year": 2024,
+        "venue_name": "Proceedings of SPIE, volume 13102, 1310227",
+        "primary_source": "https://asu.elsevierpure.com/en/publications/cryogenic-high-linearity-and-dynamic-range-c-band-low-noise-ampli/",
+        "origin": "external_primary_source",
+        "review_evidence": {
+          "contribution": "target_circuit",
+          "relevance": "strong",
+          "measured_target": true,
+          "publisher": "SPIE",
+          "publication_type": "proceedings-article",
+          "readability": "source_abstract",
+          "evidence": [
+            {
+              "url": "https://asu.elsevierpure.com/en/publications/cryogenic-high-linearity-and-dynamic-range-c-band-low-noise-ampli/",
+              "location": "Abstract",
+              "text": "A two-stage InP pHEMT LNA is the main contribution. The source distinguishes intended 4-K operation from measured noise at 10 K, with linearity also measured in the readout chain. This run grants no exception to its nonpreferred SPIE source."
+            }
+          ],
+          "publication_evidence": [
+            {
+              "url": "https://api.crossref.org/works/10.1117/12.3018029",
+              "location": "Crossref publisher-deposited record: title, publisher, type, published, published-print, published-online",
+              "text": "Formal SPIE proceedings article, volume 13102, article 1310227, published 2024.",
+              "supporting_url": "https://asu.elsevierpure.com/en/publications/cryogenic-high-linearity-and-dynamic-range-c-band-low-noise-ampli/",
+              "kind": "doi_registration",
+              "checked_at": "2026-11-17"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

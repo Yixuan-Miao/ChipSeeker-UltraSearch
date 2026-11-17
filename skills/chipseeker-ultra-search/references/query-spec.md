@@ -39,7 +39,7 @@ Modes: `lite`, `keyword`, `filtered_lite`. `filtered_lite` requires a semantic `
 
 `years` accepts `[START, END]` or `"START:END"` in the client. `top_k` is limited to 200 results per query. `venues` and `fields` are arrays. A `standard` response may include up to 6000 source-abstract characters per paper.
 
-Use the user's year interval when specified. The wide interval above avoids silently excluding predecessor work; it is not a claim that the corpus covers every year. A venue or year discovery filter should not accidentally carry into an unrestricted identity check.
+Use the user's year interval when specified. For broad discovery, set a wide interval explicitly as above to avoid the client's omitted-year fallback. The optional focused circuit-review profile uses the ten years preceding the search date for main-list discovery unless the user specifies another range. A venue or year discovery filter should not carry into an unrestricted identity check.
 
 Give every query a unique ID. Use a new ID when its meaning changes. Append new queries to the same plan to preserve the union and checkpoints across rounds.
 
@@ -53,7 +53,7 @@ Set `purpose: discovery` (the default) for paper discovery and `purpose: metadat
 
 For identity hydration, batch up to 50 DOI values or 20 exact titles per request, within the 200-result cap. Verify selector semantics before combining unrelated literal constraints: `all_terms` are requirements, while `any_terms` are alternatives. Missing identity results may reflect filters, alternate metadata or absent indexing; they are not proof that a paper is fictitious.
 
-The collector emits `papers`, `searches`, `summary`, `failed_queries`, `retry_query_ids`, and `quota`. Each paper retains its retrieval sources and ranking components. Screen the resulting metadata using the user's scope; failed queries do not establish literature coverage or absence.
+The collector emits `papers`, `searches`, `summary`, `failed_queries`, `retry_query_ids`, and `quota`. Saved searches include effective bounds and an `identity_lookup` marker for Keyword DOI and exact-title selectors. A zero result means no visible record under those bounds, not a statement about the whole literature. Each paper retains its retrieval sources and ranking components. Screen the resulting metadata using the user's scope; failed queries do not establish literature coverage or absence.
 
 The union is saved after every finished query. Partial runs set `status: partial` and exit with code 2 while preserving usable data. Progress appears on stderr; full paper metadata stays in the JSON file. Inspect `successful_discovery_queries`, `successful_metadata_queries`, `discovery_raw_results`, `metadata_raw_results` and `possibly_truncated` in addition to total counts.
 

@@ -1,0 +1,1226 @@
+{
+  "schema": "ultrasearch-screened-papers/v2",
+  "generated_at": "2026-11-17",
+  "title": "低温放大器电路综述验收样例",
+  "review_policy": {
+    "profile": "circuit_review",
+    "max_results": 20
+  },
+  "report_summary_zh": "固定公开题录与原文证据回放。六篇正式出版物展示为四项工作，另有五项反例进入筛选审计。此样例验证筛选与关联行为。",
+  "report_notes_zh": [
+    "Tian TASC经外部补回。Tian MWTL与TASC各自保留，关系仅待核实。",
+    "Heinz期刊首页版本脚注通过公开已出版全文核对；IEEE开放PDF本轮返回418。Zeng通过作者机构全文§IV-B及图10、12核对共用设计。",
+    "本样例独立于在线检索。生产验证共6个成功请求，Tian DOI/两种完整题名/机制查询未命中；正式及预印本对照见交接文档。"
+  ],
+  "summary": {
+    "status": "completed",
+    "successful_queries": 0,
+    "failed_queries": 0,
+    "unique_papers": 11,
+    "stopping_reason_zh": "固定证据回放完成，仅验证列明用例。"
+  },
+  "papers": [
+    {
+      "doi": "10.1109/tmtt.2023.3340519",
+      "title": "Monolithically Integrated C-Band Low-Noise Amplifiers for Use in Cryogenic Large-Scale RF Systems",
+      "authors": [
+        "Felix Heinz",
+        "Fabian Thome",
+        "Arnulf Leuther"
+      ],
+      "venue": "IEEE Transactions on Microwave Theory and Techniques",
+      "venue_name": "IEEE Transactions on Microwave Theory and Techniques",
+      "year": 2024,
+      "publication_status": "journal-article",
+      "publisher": "IEEE",
+      "doi_link": "https://doi.org/10.1109/tmtt.2023.3340519",
+      "primary_source": "https://doi.org/10.1109/tmtt.2023.3340519",
+      "publication_evidence": [
+        {
+          "kind": "doi_registration",
+          "url": "https://api.crossref.org/works/10.1109/tmtt.2023.3340519",
+          "location": "title, authors, container-title, published-print, type",
+          "checked_at": "2026-11-17",
+          "note": "DOI登记确认正式刊会、作者和刊期年。",
+          "text": "DOI登记确认正式刊会、作者和刊期年。"
+        }
+      ],
+      "source_in_current_corpus": false,
+      "abstract_kind": "not_available",
+      "why_keep_zh": "主要贡献为低温低噪声放大器电路。",
+      "evidence_limit_zh": "固定公开证据样例。来源标签表示本样例使用的证据来源；除Tian在线回查外，未用本样例推断当前芯寻收录状态。",
+      "importance_stars": 4,
+      "volume": "72",
+      "issue": "4",
+      "page": "2442-2451",
+      "pdf_link": "https://ieeexplore.ieee.org/ielx7/22/4359079/10363625.pdf",
+      "online_year": 2023,
+      "version_additions_zh": "长文新增三阶段 LNA2 及单片设计分析。",
+      "measurement_summary": {
+        "ambient_temperature_K": 10,
+        "bias_mW": 0.77,
+        "average_noise_temperature_K": 3.8,
+        "average_gain_dB": 23.7,
+        "source_url": "https://www.researchgate.net/publication/376634060_Monolithically_Integrated_C-Band_Low-Noise_Amplifiers_for_Use_in_Cryogenic_Large-Scale_RF_Systems",
+        "location": "abstract, LNA1 low-power bias"
+      },
+      "measurement_note_zh": "本版本测量条件与结果 环境温度 10 K，功耗 0.77 mW，平均噪声温度 3.8 K，平均增益 23.7 dB",
+      "review_evidence": {
+        "contribution": "target_circuit",
+        "relevance": "strong",
+        "measured_target": true,
+        "publication_type": "journal-article",
+        "publisher": "IEEE",
+        "readability": "source_abstract",
+        "evidence": [
+          {
+            "url": "https://www.researchgate.net/publication/376634060_Monolithically_Integrated_C-Band_Low-Noise_Amplifiers_for_Use_in_Cryogenic_Large-Scale_RF_Systems",
+            "location": "abstract, LNA1 low-power bias",
+            "text": "低温LNA本身的设计与实测是论文主要贡献，工作温度及偏置条件见本版本测量记录。"
+          }
+        ],
+        "publication_evidence": [
+          {
+            "kind": "doi_registration",
+            "url": "https://api.crossref.org/works/10.1109/tmtt.2023.3340519",
+            "location": "title, authors, container-title, published-print, type",
+            "checked_at": "2026-11-17",
+            "note": "DOI登记确认正式刊会、作者和刊期年。",
+            "text": "DOI登记确认正式刊会、作者和刊期年。"
+          }
+        ]
+      },
+      "origin": "external_primary_source"
+    },
+    {
+      "doi": "10.1109/ims37964.2023.10188065",
+      "title": "A Cryogenic Four-Channel C-Band Low-Noise Amplifier MMIC in 50-nm Metamorphic High-Electron-Mobility-Transistor Technology",
+      "authors": [
+        "Felix Heinz",
+        "Fabian Thome",
+        "Arnulf Leuther"
+      ],
+      "venue": "2023 IEEE/MTT-S International Microwave Symposium - IMS 2023",
+      "venue_name": "2023 IEEE/MTT-S International Microwave Symposium - IMS 2023",
+      "year": 2023,
+      "publication_status": "proceedings-article",
+      "publisher": "IEEE",
+      "doi_link": "https://doi.org/10.1109/ims37964.2023.10188065",
+      "primary_source": "https://doi.org/10.1109/ims37964.2023.10188065",
+      "publication_evidence": [
+        {
+          "kind": "doi_registration",
+          "url": "https://api.crossref.org/works/10.1109/ims37964.2023.10188065",
+          "location": "title, authors, container-title, published-print, type",
+          "checked_at": "2026-11-17",
+          "note": "DOI登记确认正式刊会、作者和刊期年。",
+          "text": "DOI登记确认正式刊会、作者和刊期年。"
+        }
+      ],
+      "source_in_current_corpus": false,
+      "abstract_kind": "not_available",
+      "why_keep_zh": "主要贡献为低温低噪声放大器电路。",
+      "evidence_limit_zh": "固定公开证据样例。来源标签表示本样例使用的证据来源；除Tian在线回查外，未用本样例推断当前芯寻收录状态。",
+      "importance_stars": 4,
+      "page": "127-130",
+      "measurement_summary": {
+        "ambient_temperature_K": 10,
+        "bias_mW": 7.78,
+        "average_noise_temperature_K": 2.7,
+        "average_gain_dB": 31,
+        "source_url": "https://doi.org/10.1109/ims37964.2023.10188065",
+        "location": "conference abstract"
+      },
+      "measurement_note_zh": "本版本测量条件与结果 环境温度 10 K，功耗 7.78 mW，平均噪声温度 2.7 K，平均增益 31 dB",
+      "review_evidence": {
+        "contribution": "target_circuit",
+        "relevance": "strong",
+        "measured_target": true,
+        "publication_type": "proceedings-article",
+        "publisher": "IEEE",
+        "readability": "source_abstract",
+        "evidence": [
+          {
+            "url": "https://doi.org/10.1109/ims37964.2023.10188065",
+            "location": "conference abstract",
+            "text": "低温LNA本身的设计与实测是论文主要贡献，工作温度及偏置条件见本版本测量记录。"
+          }
+        ],
+        "publication_evidence": [
+          {
+            "kind": "doi_registration",
+            "url": "https://api.crossref.org/works/10.1109/ims37964.2023.10188065",
+            "location": "title, authors, container-title, published-print, type",
+            "checked_at": "2026-11-17",
+            "note": "DOI登记确认正式刊会、作者和刊期年。",
+            "text": "DOI登记确认正式刊会、作者和刊期年。"
+          }
+        ]
+      },
+      "origin": "external_primary_source"
+    },
+    {
+      "doi": "10.1109/tmtt.2023.3312471",
+      "title": "Sub-mW Cryogenic InP HEMT LNA for Qubit Readout",
+      "authors": [
+        "Yin Zeng",
+        "Jörgen Stenarson",
+        "Peter Sobis",
+        "Niklas Wadefalk",
+        "Jan Grahn"
+      ],
+      "venue": "IEEE Transactions on Microwave Theory and Techniques",
+      "venue_name": "IEEE Transactions on Microwave Theory and Techniques",
+      "year": 2024,
+      "publication_status": "journal-article",
+      "publisher": "IEEE",
+      "doi_link": "https://doi.org/10.1109/tmtt.2023.3312471",
+      "primary_source": "https://doi.org/10.1109/tmtt.2023.3312471",
+      "publication_evidence": [
+        {
+          "kind": "doi_registration",
+          "url": "https://api.crossref.org/works/10.1109/tmtt.2023.3312471",
+          "location": "title, authors, container-title, published-print, type",
+          "checked_at": "2026-11-17",
+          "note": "DOI登记确认正式刊会、作者和刊期年。",
+          "text": "DOI登记确认正式刊会、作者和刊期年。"
+        }
+      ],
+      "source_in_current_corpus": false,
+      "abstract_kind": "not_available",
+      "why_keep_zh": "主要贡献为低温低噪声放大器电路。",
+      "evidence_limit_zh": "固定公开证据样例。来源标签表示本样例使用的证据来源；除Tian在线回查外，未用本样例推断当前芯寻收录状态。",
+      "importance_stars": 4,
+      "volume": "72",
+      "issue": "3",
+      "page": "1606-1617",
+      "pdf_link": "https://research.chalmers.se/publication/538032/file/538032_Fulltext.pdf",
+      "online_year": 2023,
+      "version_additions_zh": "长文增加低功耗模型分析及 200 μW 偏置下的测量，保留会议版 100 μW 条件。",
+      "measurement_summary": {
+        "ambient_temperature_K": 4,
+        "bias_uW": 200,
+        "average_noise_temperature_K": 2.0,
+        "average_gain_dB": 23.1,
+        "source_url": "https://research.chalmers.se/publication/538032/file/538032_Fulltext.pdf",
+        "location": "Section V, Fig.13(b)"
+      },
+      "measurement_note_zh": "本版本测量条件与结果 环境温度 4 K，功耗 200 μW，平均噪声温度 2.0 K，平均增益 23.1 dB",
+      "review_evidence": {
+        "contribution": "target_circuit",
+        "relevance": "strong",
+        "measured_target": true,
+        "publication_type": "journal-article",
+        "publisher": "IEEE",
+        "readability": "source_abstract",
+        "evidence": [
+          {
+            "url": "https://research.chalmers.se/publication/538032/file/538032_Fulltext.pdf",
+            "location": "Section V, Fig.13(b)",
+            "text": "低温LNA本身的设计与实测是论文主要贡献，工作温度及偏置条件见本版本测量记录。"
+          }
+        ],
+        "publication_evidence": [
+          {
+            "kind": "doi_registration",
+            "url": "https://api.crossref.org/works/10.1109/tmtt.2023.3312471",
+            "location": "title, authors, container-title, published-print, type",
+            "checked_at": "2026-11-17",
+            "note": "DOI登记确认正式刊会、作者和刊期年。",
+            "text": "DOI登记确认正式刊会、作者和刊期年。"
+          }
+        ]
+      },
+      "origin": "external_primary_source"
+    },
+    {
+      "doi": "10.23919/apmc55665.2022.9999965",
+      "title": "A 100-μW 4–6 GHz Cryogenic InP HEMT LNA Achieving an Average Noise Temperature of 2.6 K",
+      "authors": [
+        "Yin Zeng",
+        "Jorgen Stenarson",
+        "Peter Sobis",
+        "Niklas Wadefalk",
+        "Jan Grahn"
+      ],
+      "venue": "2022 Asia-Pacific Microwave Conference (APMC)",
+      "venue_name": "2022 Asia-Pacific Microwave Conference (APMC)",
+      "year": 2022,
+      "publication_status": "proceedings-article",
+      "publisher": "IEEE",
+      "doi_link": "https://doi.org/10.23919/apmc55665.2022.9999965",
+      "primary_source": "https://doi.org/10.23919/apmc55665.2022.9999965",
+      "publication_evidence": [
+        {
+          "kind": "doi_registration",
+          "url": "https://api.crossref.org/works/10.23919/apmc55665.2022.9999965",
+          "location": "title, authors, container-title, published-print, type",
+          "checked_at": "2026-11-17",
+          "note": "DOI登记确认正式刊会、作者和刊期年。",
+          "text": "DOI登记确认正式刊会、作者和刊期年。"
+        }
+      ],
+      "source_in_current_corpus": false,
+      "abstract_kind": "not_available",
+      "why_keep_zh": "主要贡献为低温低噪声放大器电路。",
+      "evidence_limit_zh": "固定公开证据样例。来源标签表示本样例使用的证据来源；除Tian在线回查外，未用本样例推断当前芯寻收录状态。",
+      "importance_stars": 4,
+      "page": "13-15",
+      "measurement_summary": {
+        "ambient_temperature_K": 4,
+        "bias_uW": 100,
+        "average_noise_temperature_K": 2.6,
+        "source_url": "https://doi.org/10.23919/apmc55665.2022.9999965",
+        "location": "title, abstract"
+      },
+      "measurement_note_zh": "本版本测量条件与结果 环境温度 4 K，功耗 100 μW，平均噪声温度 2.6 K",
+      "review_evidence": {
+        "contribution": "target_circuit",
+        "relevance": "strong",
+        "measured_target": true,
+        "publication_type": "proceedings-article",
+        "publisher": "IEEE",
+        "readability": "source_abstract",
+        "evidence": [
+          {
+            "url": "https://doi.org/10.23919/apmc55665.2022.9999965",
+            "location": "title, abstract",
+            "text": "低温LNA本身的设计与实测是论文主要贡献，工作温度及偏置条件见本版本测量记录。"
+          }
+        ],
+        "publication_evidence": [
+          {
+            "kind": "doi_registration",
+            "url": "https://api.crossref.org/works/10.23919/apmc55665.2022.9999965",
+            "location": "title, authors, container-title, published-print, type",
+            "checked_at": "2026-11-17",
+            "note": "DOI登记确认正式刊会、作者和刊期年。",
+            "text": "DOI登记确认正式刊会、作者和刊期年。"
+          }
+        ]
+      },
+      "origin": "external_primary_source"
+    },
+    {
+      "doi": "10.1109/tasc.2024.3514608",
+      "title": "Cryogenic C -Band Hybrid MMIC Low-Noise Amplifier Using HTS Input Matching Network Assisted by Gray Wolf Optimizer",
+      "authors": [
+        "Hongliang Tian",
+        "Haiwen Liu",
+        "Zeren Song",
+        "Yulian Xu",
+        "Ruolin Wang",
+        "Shaofei Wang"
+      ],
+      "venue": "IEEE Transactions on Applied Superconductivity",
+      "venue_name": "IEEE Transactions on Applied Superconductivity",
+      "year": 2025,
+      "publication_status": "journal-article",
+      "publisher": "IEEE",
+      "doi_link": "https://doi.org/10.1109/tasc.2024.3514608",
+      "primary_source": "https://doi.org/10.1109/tasc.2024.3514608",
+      "publication_evidence": [
+        {
+          "kind": "doi_registration",
+          "url": "https://api.crossref.org/works/10.1109/tasc.2024.3514608",
+          "location": "title, authors, container-title, published-print, type",
+          "checked_at": "2026-11-17",
+          "note": "DOI登记确认正式刊会、作者和刊期年。",
+          "text": "DOI登记确认正式刊会、作者和刊期年。"
+        }
+      ],
+      "source_in_current_corpus": false,
+      "abstract_kind": "not_available",
+      "why_keep_zh": "Zeng学位论文表3.1与参考文献[63]提供线索，完整题名核对正式TASC记录后外部补回；当前生产DOI及题名回查均未命中。主要贡献是低温HTS匹配LNA。",
+      "evidence_limit_zh": "固定公开证据样例。来源标签表示本样例使用的证据来源；除Tian在线回查外，未用本样例推断当前芯寻收录状态。",
+      "importance_stars": 4,
+      "volume": "35",
+      "issue": "2",
+      "page": "1-7",
+      "review_evidence": {
+        "contribution": "target_circuit",
+        "relevance": "strong",
+        "measured_target": true,
+        "publication_type": "journal-article",
+        "publisher": "IEEE",
+        "readability": "source_abstract",
+        "evidence": [
+          {
+            "url": "https://ir.specialsci.cn/xajt/scholar/result?scholar=1f02b696e247fbf0%3AHongliang+TIAN",
+            "location": "Cryogenic C-Band Hybrid MMIC article, institutional abstract",
+            "text": "主要贡献是以外置HTS输入匹配改进4–8 GHz混合MMIC LNA，报告77 K与15 K下LNA的噪声对照实测。"
+          }
+        ],
+        "publication_evidence": [
+          {
+            "kind": "doi_registration",
+            "url": "https://api.crossref.org/works/10.1109/tasc.2024.3514608",
+            "location": "title, authors, container-title, published-print, type",
+            "checked_at": "2026-11-17",
+            "note": "DOI登记确认正式刊会、作者和刊期年。",
+            "text": "DOI登记确认正式刊会、作者和刊期年。"
+          }
+        ]
+      },
+      "origin": "external_primary_source",
+      "gap_discovery_evidence": [
+        {
+          "title": "Cryogenic C-Band Hybrid-MMIC Low-Noise Amplifier Using HTS Input Matching Network Assisted by Grey Wolf Optimizer",
+          "location": "Table 3.1, printed p.48 / PDF p.64, entry [63]; bibliography [63], printed p.129 / PDF p.145",
+          "note": "表3.1把该设计列为4–8 GHz hybrid IC，并给出比较数据；[63]提供Tian等六位作者、完整题名、TASC 35(2)、2025年。此引用未提供DOI，下一步以完整题名核对正式记录。"
+        }
+      ]
+    },
+    {
+      "doi": "10.1109/lmwt.2024.3443852",
+      "title": "Fusion Design of Cryogenic Filtering Low-Noise Amplifier With High Out-of-Band Rejection Assisted by Grey Wolf Optimizer",
+      "authors": [
+        "Hongliang Tian",
+        "Haiwen Liu",
+        "Zeren Song",
+        "Sidong Wang",
+        "Ruolin Wang",
+        "Shaofei Wang",
+        "Chao Du"
+      ],
+      "venue": "IEEE Microwave and Wireless Technology Letters",
+      "venue_name": "IEEE Microwave and Wireless Technology Letters",
+      "year": 2024,
+      "publication_status": "journal-article",
+      "publisher": "IEEE",
+      "doi_link": "https://doi.org/10.1109/lmwt.2024.3443852",
+      "primary_source": "https://doi.org/10.1109/lmwt.2024.3443852",
+      "publication_evidence": [
+        {
+          "kind": "doi_registration",
+          "url": "https://api.crossref.org/works/10.1109/lmwt.2024.3443852",
+          "location": "title, authors, container-title, published-print, type",
+          "checked_at": "2026-11-17",
+          "note": "DOI登记确认正式刊会、作者和刊期年。",
+          "text": "DOI登记确认正式刊会、作者和刊期年。"
+        }
+      ],
+      "source_in_current_corpus": false,
+      "abstract_kind": "not_available",
+      "why_keep_zh": "主要贡献为低温低噪声放大器电路。",
+      "evidence_limit_zh": "固定公开证据样例。来源标签表示本样例使用的证据来源；除Tian在线回查外，未用本样例推断当前芯寻收录状态。",
+      "importance_stars": 4,
+      "volume": "34",
+      "issue": "10",
+      "page": "1162-1165",
+      "review_evidence": {
+        "contribution": "target_circuit",
+        "relevance": "strong",
+        "measured_target": true,
+        "publication_type": "journal-article",
+        "publisher": "IEEE",
+        "readability": "source_abstract",
+        "evidence": [
+          {
+            "url": "https://ir.specialsci.cn/xajt/scholar/result?page=2&scholar=1f02b696e247fbf0%3AHongliang+TIAN",
+            "location": "Fusion Design article, institutional abstract",
+            "text": "主要贡献是100 nm InP低温滤波LNA，摘要报告5 K下4–8 GHz放大器的增益、噪声及带外抑制实测。"
+          }
+        ],
+        "publication_evidence": [
+          {
+            "kind": "doi_registration",
+            "url": "https://api.crossref.org/works/10.1109/lmwt.2024.3443852",
+            "location": "title, authors, container-title, published-print, type",
+            "checked_at": "2026-11-17",
+            "note": "DOI登记确认正式刊会、作者和刊期年。",
+            "text": "DOI登记确认正式刊会、作者和刊期年。"
+          }
+        ]
+      },
+      "origin": "external_primary_source"
+    },
+    {
+      "title": "A wireless terahertz cryogenic interconnect that minimizes heat-to-information transfer",
+      "authors": [
+        "Jinchen Wang",
+        "Isaac Harris",
+        "Mohamed Ibrahim",
+        "Dirk Englund",
+        "Ruonan Han"
+      ],
+      "doi": "10.1038/s41928-025-01355-9",
+      "year": 2025,
+      "publication_date": "2025-03-10",
+      "venue_name": "Nature Electronics",
+      "primary_source": "https://www.nature.com/articles/s41928-025-01355-9",
+      "origin": "external_primary_source",
+      "review_evidence": {
+        "contribution": "system",
+        "relevance": "strong",
+        "measured_target": false,
+        "publisher": "Springer Nature",
+        "publication_type": "journal-article",
+        "readability": "source_abstract",
+        "evidence": [
+          {
+            "url": "https://www.nature.com/articles/s41928-025-01355-9",
+            "location": "Abstract; Figures 2–5; Author contributions",
+            "text": "The contribution is a 260-GHz wireless cryogenic interconnect using passive cold detection and backscatter. Its main experimental results concern the link and heat load. Amplifier design is not the primary contribution."
+          }
+        ],
+        "publication_evidence": [
+          {
+            "url": "https://api.crossref.org/works/10.1038/s41928-025-01355-9",
+            "location": "Crossref publisher-deposited record: title, publisher, type, published, published-print, published-online",
+            "text": "Nature Electronics 8, 426–436 (2025); version of record published 10 March 2025.",
+            "supporting_url": "https://www.nature.com/articles/s41928-025-01355-9",
+            "kind": "doi_registration",
+            "checked_at": "2026-11-17"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Cryo-CMOS Integrator-Based DAC for Scalable Biasing of Semiconductor Qubits",
+      "authors": [
+        "Luc Enthoven",
+        "Job van Staveren",
+        "Jiang Gong",
+        "Masoud Babaie",
+        "Fabio Sebastiano"
+      ],
+      "doi": "10.1109/TCSI.2026.3692714",
+      "year": 2026,
+      "venue_name": "IEEE Transactions on Circuits and Systems I: Regular Papers",
+      "primary_source": "https://research.tudelft.nl/en/publications/cryo-cmos-integrator-based-dac-for-scalable-biasing-of-semiconduc/",
+      "origin": "external_primary_source",
+      "review_evidence": {
+        "contribution": "other_circuit",
+        "relevance": "strong",
+        "measured_target": false,
+        "publisher": "IEEE",
+        "publication_type": "journal-article",
+        "readability": "source_abstract",
+        "evidence": [
+          {
+            "url": "https://research.tudelft.nl/en/publications/cryo-cmos-integrator-based-dac-for-scalable-biasing-of-semiconduc/",
+            "location": "Abstract",
+            "text": "The integrator and high-voltage output stage support a cryogenic DAC for biasing qubit electrodes. Reported resolution, noise and INL characterize the DAC. The target circuit contribution is a DAC, not an independent amplifier design."
+          }
+        ],
+        "publication_evidence": [
+          {
+            "url": "https://api.crossref.org/works/10.1109/TCSI.2026.3692714",
+            "location": "Crossref publisher-deposited record: title, publisher, type, published, published-print, published-online",
+            "text": "Final published IEEE TCAS-I article, volume 73 issue 10, pages 6614–6623 (2026).",
+            "supporting_url": "https://repository.tudelft.nl/record/uuid%3Aab708eb1-cebd-41dd-87e0-c98066b94e9f",
+            "kind": "doi_registration",
+            "checked_at": "2026-11-17"
+          }
+        ]
+      }
+    },
+    {
+      "title": "A low-noise CMOS preamplifier operating at 4.2 K",
+      "authors": [
+        "U. Kleine",
+        "J. Bieger",
+        "H. Seifert"
+      ],
+      "doi": "10.1109/4.297696",
+      "year": 1994,
+      "venue_name": "IEEE Journal of Solid-State Circuits",
+      "primary_source": "https://doi.org/10.1109/4.297696",
+      "origin": "external_primary_source",
+      "review_evidence": {
+        "contribution": "target_circuit",
+        "relevance": "strong",
+        "measured_target": true,
+        "publisher": "IEEE",
+        "publication_type": "journal-article",
+        "readability": "metadata_and_author_citation",
+        "evidence": [
+          {
+            "url": "https://backend.orbit.dtu.dk/ws/portalfiles/portal/170360214/FINAL_VERSION.pdf",
+            "location": "References, Kleine et al. (1994)",
+            "text": "The authors cite this dedicated 4.2-K preamplifier article as prior low-temperature amplifier work. Its age, rather than a topical mismatch, excludes it under this run's policy."
+          }
+        ],
+        "publication_evidence": [
+          {
+            "url": "https://api.crossref.org/works/10.1109/4.297696",
+            "location": "Crossref publisher-deposited record: title, publisher, type, published, published-print, published-online",
+            "text": "IEEE Journal of Solid-State Circuits article published in 1994.",
+            "supporting_url": "https://doi.org/10.1109/4.297696",
+            "kind": "doi_registration",
+            "checked_at": "2026-11-17"
+          }
+        ]
+      }
+    },
+    {
+      "title": "A Multi-Module Silicon-On-Insulator Chip Assembly Containing Quantum Dots and Cryogenic Radio-Frequency Readout Electronics",
+      "authors": [
+        "David J. Ibberson",
+        "James Kirkman",
+        "John J. L. Morton",
+        "M. Fernando Gonzalez-Zalba",
+        "Alberto Gomez-Saiz"
+      ],
+      "doi": "10.1109/ICECS61496.2024.10848854",
+      "year": 2024,
+      "repository_citation_year": 2025,
+      "venue_name": "2024 IEEE International Conference on Electronics, Circuits and Systems (ICECS)",
+      "primary_source": "https://discovery.ucl.ac.uk/id/eprint/10217980/",
+      "origin": "external_primary_source",
+      "review_evidence": {
+        "contribution": "system",
+        "relevance": "strong",
+        "measured_target": true,
+        "publisher": "IEEE",
+        "publication_type": "proceedings-article",
+        "readability": "source_abstract",
+        "evidence": [
+          {
+            "url": "https://discovery.ucl.ac.uk/id/eprint/10217980/",
+            "location": "Abstract",
+            "text": "The assembly contains LNA, SP8T and quantum-dot chiplets and reports measured LNA gain/noise. Its organizing contribution and final demonstration are the combined multi-module multiplexed readout. Actual LNA measurements do not make the amplifier the primary contribution."
+          }
+        ],
+        "publication_evidence": [
+          {
+            "url": "https://api.crossref.org/works/10.1109/ICECS61496.2024.10848854",
+            "location": "Crossref publisher-deposited record: title, publisher, type, published, published-print, published-online",
+            "text": "Formal IEEE ICECS proceedings contribution for the 18–20 November 2024 event. The repository citation uses 2025, recorded separately without asserting an online-publication date.",
+            "supporting_url": "https://discovery.ucl.ac.uk/id/eprint/10217980/",
+            "kind": "doi_registration",
+            "checked_at": "2026-11-17"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Cryogenic High Linearity and Dynamic Range, C-Band Low Noise Amplifier for uMUX TES and CMB Readout Systems",
+      "authors": [
+        "Justin L. H. Mathewson",
+        "Eric L. Weeks",
+        "Richard M. Scott",
+        "Kaiwen Zheng",
+        "Chris Groppi",
+        "Philip Mauskopf",
+        "Hamdi Mani"
+      ],
+      "doi": "10.1117/12.3018029",
+      "year": 2024,
+      "venue_name": "Proceedings of SPIE, volume 13102, 1310227",
+      "primary_source": "https://asu.elsevierpure.com/en/publications/cryogenic-high-linearity-and-dynamic-range-c-band-low-noise-ampli/",
+      "origin": "external_primary_source",
+      "review_evidence": {
+        "contribution": "target_circuit",
+        "relevance": "strong",
+        "measured_target": true,
+        "publisher": "SPIE",
+        "publication_type": "proceedings-article",
+        "readability": "source_abstract",
+        "evidence": [
+          {
+            "url": "https://asu.elsevierpure.com/en/publications/cryogenic-high-linearity-and-dynamic-range-c-band-low-noise-ampli/",
+            "location": "Abstract",
+            "text": "A two-stage InP pHEMT LNA is the main contribution. The source distinguishes intended 4-K operation from measured noise at 10 K, with linearity also measured in the readout chain. This run grants no exception to its nonpreferred SPIE source."
+          }
+        ],
+        "publication_evidence": [
+          {
+            "url": "https://api.crossref.org/works/10.1117/12.3018029",
+            "location": "Crossref publisher-deposited record: title, publisher, type, published, published-print, published-online",
+            "text": "Formal SPIE proceedings article, volume 13102, article 1310227, published 2024.",
+            "supporting_url": "https://asu.elsevierpure.com/en/publications/cryogenic-high-linearity-and-dynamic-range-c-band-low-noise-ampli/",
+            "kind": "doi_registration",
+            "checked_at": "2026-11-17"
+          }
+        ]
+      }
+    }
+  ],
+  "version_relations": [
+    {
+      "from_doi": "10.1109/ims37964.2023.10188065",
+      "to_doi": "10.1109/tmtt.2023.3340519",
+      "relation_type": "journal_extension",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "publisher_version_statement",
+          "url": "https://www.researchgate.net/publication/376634060_Monolithically_Integrated_C-Band_Low-Noise_Amplifiers_for_Use_in_Cryogenic_Large-Scale_RF_Systems",
+          "canonical_url": "https://ieeexplore.ieee.org/ielx7/22/4359079/10363625.pdf",
+          "location": "published journal p.2442, first-page manuscript footnote",
+          "excerpt": "An earlier version of this paper was presented at the IEEE MTT-S International Microwave Symposium (IMS)",
+          "note": "同一首页脚注明确给出 IMS 2023 及会议 DOI；IEEE 开放 PDF 本轮返回418，公开的已出版 CC-BY 全文与 Fraunhofer 机构题录交叉核对。"
+        }
+      ]
+    },
+    {
+      "from_doi": "10.23919/apmc55665.2022.9999965",
+      "to_doi": "10.1109/tmtt.2023.3312471",
+      "relation_type": "shared_design",
+      "status": "confirmed",
+      "evidence": [
+        {
+          "kind": "explicit_design_reuse",
+          "url": "https://research.chalmers.se/publication/538032/file/538032_Fulltext.pdf",
+          "location": "Section IV-B; Figs.10 and 12; reference [34], journal pp.1613–1614 (author PDF pp.9–10)",
+          "note": "§IV-B 的三段共源 100 nm InP HEMT 设计指向 [34]；图10电路与图12实物照片均注明 [34]，该参考文献是 APMC 2022 正式会议短文。图13分别保留100与200 μW测量。"
+        }
+      ]
+    },
+    {
+      "from_doi": "10.1109/lmwt.2024.3443852",
+      "to_doi": "10.1109/tasc.2024.3514608",
+      "relation_type": "related",
+      "status": "pending",
+      "evidence": [
+        {
+          "kind": "shared_team_and_mechanism",
+          "url": "https://doi.org/10.1109/tasc.2024.3514608",
+          "location": "title and authors",
+          "note": "同团队及低温 HTS 匹配相关设计，仅此不足以确认同一项工作；且两端均为期刊论文。"
+        }
+      ]
+    }
+  ],
+  "acceptance": {
+    "expected_works": 4,
+    "expected_publications": 6,
+    "positive_dois": [
+      "10.1109/tmtt.2023.3340519",
+      "10.1109/ims37964.2023.10188065",
+      "10.1109/tmtt.2023.3312471",
+      "10.23919/apmc55665.2022.9999965",
+      "10.1109/tasc.2024.3514608",
+      "10.1109/lmwt.2024.3443852"
+    ],
+    "negative_cases": [
+      {
+        "doi": "10.1038/s41928-025-01355-9",
+        "decision": "system_contribution"
+      },
+      {
+        "doi": "10.1109/TCSI.2026.3692714",
+        "decision": "system_contribution"
+      },
+      {
+        "doi": "10.1109/4.297696",
+        "decision": "outside_window"
+      },
+      {
+        "doi": "10.1109/ICECS61496.2024.10848854",
+        "decision": "system_contribution"
+      },
+      {
+        "doi": "10.1117/12.3018029",
+        "decision": "source_priority"
+      }
+    ]
+  },
+  "replay_catalog": {
+    "papers": [
+      {
+        "doi": "10.1109/tmtt.2023.3340519",
+        "title": "Monolithically Integrated C-Band Low-Noise Amplifiers for Use in Cryogenic Large-Scale RF Systems",
+        "authors": [
+          "Felix Heinz",
+          "Fabian Thome",
+          "Arnulf Leuther"
+        ],
+        "venue": "IEEE Transactions on Microwave Theory and Techniques",
+        "venue_name": "IEEE Transactions on Microwave Theory and Techniques",
+        "year": 2024,
+        "publication_status": "journal-article",
+        "publisher": "IEEE",
+        "doi_link": "https://doi.org/10.1109/tmtt.2023.3340519",
+        "primary_source": "https://doi.org/10.1109/tmtt.2023.3340519",
+        "publication_evidence": [
+          {
+            "kind": "doi_registration",
+            "url": "https://api.crossref.org/works/10.1109/tmtt.2023.3340519",
+            "location": "title, authors, container-title, published-print, type",
+            "checked_at": "2026-11-17",
+            "note": "DOI登记确认正式刊会、作者和刊期年。",
+            "text": "DOI登记确认正式刊会、作者和刊期年。"
+          }
+        ],
+        "source_in_current_corpus": false,
+        "abstract_kind": "not_available",
+        "why_keep_zh": "主要贡献为低温低噪声放大器电路。",
+        "evidence_limit_zh": "固定公开证据样例。来源标签表示本样例使用的证据来源；除Tian在线回查外，未用本样例推断当前芯寻收录状态。",
+        "importance_stars": 4,
+        "volume": "72",
+        "issue": "4",
+        "page": "2442-2451",
+        "pdf_link": "https://ieeexplore.ieee.org/ielx7/22/4359079/10363625.pdf",
+        "online_year": 2023,
+        "version_additions_zh": "长文新增三阶段 LNA2 及单片设计分析。",
+        "measurement_summary": {
+          "ambient_temperature_K": 10,
+          "bias_mW": 0.77,
+          "average_noise_temperature_K": 3.8,
+          "average_gain_dB": 23.7,
+          "source_url": "https://www.researchgate.net/publication/376634060_Monolithically_Integrated_C-Band_Low-Noise_Amplifiers_for_Use_in_Cryogenic_Large-Scale_RF_Systems",
+          "location": "abstract, LNA1 low-power bias"
+        },
+        "measurement_note_zh": "本版本测量条件与结果 环境温度 10 K，功耗 0.77 mW，平均噪声温度 3.8 K，平均增益 23.7 dB",
+        "review_evidence": {
+          "contribution": "target_circuit",
+          "relevance": "strong",
+          "measured_target": true,
+          "publication_type": "journal-article",
+          "publisher": "IEEE",
+          "readability": "source_abstract",
+          "evidence": [
+            {
+              "url": "https://www.researchgate.net/publication/376634060_Monolithically_Integrated_C-Band_Low-Noise_Amplifiers_for_Use_in_Cryogenic_Large-Scale_RF_Systems",
+              "location": "abstract, LNA1 low-power bias",
+              "text": "低温LNA本身的设计与实测是论文主要贡献，工作温度及偏置条件见本版本测量记录。"
+            }
+          ],
+          "publication_evidence": [
+            {
+              "kind": "doi_registration",
+              "url": "https://api.crossref.org/works/10.1109/tmtt.2023.3340519",
+              "location": "title, authors, container-title, published-print, type",
+              "checked_at": "2026-11-17",
+              "note": "DOI登记确认正式刊会、作者和刊期年。",
+              "text": "DOI登记确认正式刊会、作者和刊期年。"
+            }
+          ]
+        },
+        "origin": "external_primary_source"
+      },
+      {
+        "doi": "10.1109/ims37964.2023.10188065",
+        "title": "A Cryogenic Four-Channel C-Band Low-Noise Amplifier MMIC in 50-nm Metamorphic High-Electron-Mobility-Transistor Technology",
+        "authors": [
+          "Felix Heinz",
+          "Fabian Thome",
+          "Arnulf Leuther"
+        ],
+        "venue": "2023 IEEE/MTT-S International Microwave Symposium - IMS 2023",
+        "venue_name": "2023 IEEE/MTT-S International Microwave Symposium - IMS 2023",
+        "year": 2023,
+        "publication_status": "proceedings-article",
+        "publisher": "IEEE",
+        "doi_link": "https://doi.org/10.1109/ims37964.2023.10188065",
+        "primary_source": "https://doi.org/10.1109/ims37964.2023.10188065",
+        "publication_evidence": [
+          {
+            "kind": "doi_registration",
+            "url": "https://api.crossref.org/works/10.1109/ims37964.2023.10188065",
+            "location": "title, authors, container-title, published-print, type",
+            "checked_at": "2026-11-17",
+            "note": "DOI登记确认正式刊会、作者和刊期年。",
+            "text": "DOI登记确认正式刊会、作者和刊期年。"
+          }
+        ],
+        "source_in_current_corpus": false,
+        "abstract_kind": "not_available",
+        "why_keep_zh": "主要贡献为低温低噪声放大器电路。",
+        "evidence_limit_zh": "固定公开证据样例。来源标签表示本样例使用的证据来源；除Tian在线回查外，未用本样例推断当前芯寻收录状态。",
+        "importance_stars": 4,
+        "page": "127-130",
+        "measurement_summary": {
+          "ambient_temperature_K": 10,
+          "bias_mW": 7.78,
+          "average_noise_temperature_K": 2.7,
+          "average_gain_dB": 31,
+          "source_url": "https://doi.org/10.1109/ims37964.2023.10188065",
+          "location": "conference abstract"
+        },
+        "measurement_note_zh": "本版本测量条件与结果 环境温度 10 K，功耗 7.78 mW，平均噪声温度 2.7 K，平均增益 31 dB",
+        "review_evidence": {
+          "contribution": "target_circuit",
+          "relevance": "strong",
+          "measured_target": true,
+          "publication_type": "proceedings-article",
+          "publisher": "IEEE",
+          "readability": "source_abstract",
+          "evidence": [
+            {
+              "url": "https://doi.org/10.1109/ims37964.2023.10188065",
+              "location": "conference abstract",
+              "text": "低温LNA本身的设计与实测是论文主要贡献，工作温度及偏置条件见本版本测量记录。"
+            }
+          ],
+          "publication_evidence": [
+            {
+              "kind": "doi_registration",
+              "url": "https://api.crossref.org/works/10.1109/ims37964.2023.10188065",
+              "location": "title, authors, container-title, published-print, type",
+              "checked_at": "2026-11-17",
+              "note": "DOI登记确认正式刊会、作者和刊期年。",
+              "text": "DOI登记确认正式刊会、作者和刊期年。"
+            }
+          ]
+        },
+        "origin": "external_primary_source"
+      },
+      {
+        "doi": "10.1109/tmtt.2023.3312471",
+        "title": "Sub-mW Cryogenic InP HEMT LNA for Qubit Readout",
+        "authors": [
+          "Yin Zeng",
+          "Jörgen Stenarson",
+          "Peter Sobis",
+          "Niklas Wadefalk",
+          "Jan Grahn"
+        ],
+        "venue": "IEEE Transactions on Microwave Theory and Techniques",
+        "venue_name": "IEEE Transactions on Microwave Theory and Techniques",
+        "year": 2024,
+        "publication_status": "journal-article",
+        "publisher": "IEEE",
+        "doi_link": "https://doi.org/10.1109/tmtt.2023.3312471",
+        "primary_source": "https://doi.org/10.1109/tmtt.2023.3312471",
+        "publication_evidence": [
+          {
+            "kind": "doi_registration",
+            "url": "https://api.crossref.org/works/10.1109/tmtt.2023.3312471",
+            "location": "title, authors, container-title, published-print, type",
+            "checked_at": "2026-11-17",
+            "note": "DOI登记确认正式刊会、作者和刊期年。",
+            "text": "DOI登记确认正式刊会、作者和刊期年。"
+          }
+        ],
+        "source_in_current_corpus": false,
+        "abstract_kind": "not_available",
+        "why_keep_zh": "主要贡献为低温低噪声放大器电路。",
+        "evidence_limit_zh": "固定公开证据样例。来源标签表示本样例使用的证据来源；除Tian在线回查外，未用本样例推断当前芯寻收录状态。",
+        "importance_stars": 4,
+        "volume": "72",
+        "issue": "3",
+        "page": "1606-1617",
+        "pdf_link": "https://research.chalmers.se/publication/538032/file/538032_Fulltext.pdf",
+        "online_year": 2023,
+        "version_additions_zh": "长文增加低功耗模型分析及 200 μW 偏置下的测量，保留会议版 100 μW 条件。",
+        "measurement_summary": {
+          "ambient_temperature_K": 4,
+          "bias_uW": 200,
+          "average_noise_temperature_K": 2.0,
+          "average_gain_dB": 23.1,
+          "source_url": "https://research.chalmers.se/publication/538032/file/538032_Fulltext.pdf",
+          "location": "Section V, Fig.13(b)"
+        },
+        "measurement_note_zh": "本版本测量条件与结果 环境温度 4 K，功耗 200 μW，平均噪声温度 2.0 K，平均增益 23.1 dB",
+        "review_evidence": {
+          "contribution": "target_circuit",
+          "relevance": "strong",
+          "measured_target": true,
+          "publication_type": "journal-article",
+          "publisher": "IEEE",
+          "readability": "source_abstract",
+          "evidence": [
+            {
+              "url": "https://research.chalmers.se/publication/538032/file/538032_Fulltext.pdf",
+              "location": "Section V, Fig.13(b)",
+              "text": "低温LNA本身的设计与实测是论文主要贡献，工作温度及偏置条件见本版本测量记录。"
+            }
+          ],
+          "publication_evidence": [
+            {
+              "kind": "doi_registration",
+              "url": "https://api.crossref.org/works/10.1109/tmtt.2023.3312471",
+              "location": "title, authors, container-title, published-print, type",
+              "checked_at": "2026-11-17",
+              "note": "DOI登记确认正式刊会、作者和刊期年。",
+              "text": "DOI登记确认正式刊会、作者和刊期年。"
+            }
+          ]
+        },
+        "origin": "external_primary_source"
+      },
+      {
+        "doi": "10.23919/apmc55665.2022.9999965",
+        "title": "A 100-μW 4–6 GHz Cryogenic InP HEMT LNA Achieving an Average Noise Temperature of 2.6 K",
+        "authors": [
+          "Yin Zeng",
+          "Jorgen Stenarson",
+          "Peter Sobis",
+          "Niklas Wadefalk",
+          "Jan Grahn"
+        ],
+        "venue": "2022 Asia-Pacific Microwave Conference (APMC)",
+        "venue_name": "2022 Asia-Pacific Microwave Conference (APMC)",
+        "year": 2022,
+        "publication_status": "proceedings-article",
+        "publisher": "IEEE",
+        "doi_link": "https://doi.org/10.23919/apmc55665.2022.9999965",
+        "primary_source": "https://doi.org/10.23919/apmc55665.2022.9999965",
+        "publication_evidence": [
+          {
+            "kind": "doi_registration",
+            "url": "https://api.crossref.org/works/10.23919/apmc55665.2022.9999965",
+            "location": "title, authors, container-title, published-print, type",
+            "checked_at": "2026-11-17",
+            "note": "DOI登记确认正式刊会、作者和刊期年。",
+            "text": "DOI登记确认正式刊会、作者和刊期年。"
+          }
+        ],
+        "source_in_current_corpus": false,
+        "abstract_kind": "not_available",
+        "why_keep_zh": "主要贡献为低温低噪声放大器电路。",
+        "evidence_limit_zh": "固定公开证据样例。来源标签表示本样例使用的证据来源；除Tian在线回查外，未用本样例推断当前芯寻收录状态。",
+        "importance_stars": 4,
+        "page": "13-15",
+        "measurement_summary": {
+          "ambient_temperature_K": 4,
+          "bias_uW": 100,
+          "average_noise_temperature_K": 2.6,
+          "source_url": "https://doi.org/10.23919/apmc55665.2022.9999965",
+          "location": "title, abstract"
+        },
+        "measurement_note_zh": "本版本测量条件与结果 环境温度 4 K，功耗 100 μW，平均噪声温度 2.6 K",
+        "review_evidence": {
+          "contribution": "target_circuit",
+          "relevance": "strong",
+          "measured_target": true,
+          "publication_type": "proceedings-article",
+          "publisher": "IEEE",
+          "readability": "source_abstract",
+          "evidence": [
+            {
+              "url": "https://doi.org/10.23919/apmc55665.2022.9999965",
+              "location": "title, abstract",
+              "text": "低温LNA本身的设计与实测是论文主要贡献，工作温度及偏置条件见本版本测量记录。"
+            }
+          ],
+          "publication_evidence": [
+            {
+              "kind": "doi_registration",
+              "url": "https://api.crossref.org/works/10.23919/apmc55665.2022.9999965",
+              "location": "title, authors, container-title, published-print, type",
+              "checked_at": "2026-11-17",
+              "note": "DOI登记确认正式刊会、作者和刊期年。",
+              "text": "DOI登记确认正式刊会、作者和刊期年。"
+            }
+          ]
+        },
+        "origin": "external_primary_source"
+      },
+      {
+        "doi": "10.1109/tasc.2024.3514608",
+        "title": "Cryogenic C -Band Hybrid MMIC Low-Noise Amplifier Using HTS Input Matching Network Assisted by Gray Wolf Optimizer",
+        "authors": [
+          "Hongliang Tian",
+          "Haiwen Liu",
+          "Zeren Song",
+          "Yulian Xu",
+          "Ruolin Wang",
+          "Shaofei Wang"
+        ],
+        "venue": "IEEE Transactions on Applied Superconductivity",
+        "venue_name": "IEEE Transactions on Applied Superconductivity",
+        "year": 2025,
+        "publication_status": "journal-article",
+        "publisher": "IEEE",
+        "doi_link": "https://doi.org/10.1109/tasc.2024.3514608",
+        "primary_source": "https://doi.org/10.1109/tasc.2024.3514608",
+        "publication_evidence": [
+          {
+            "kind": "doi_registration",
+            "url": "https://api.crossref.org/works/10.1109/tasc.2024.3514608",
+            "location": "title, authors, container-title, published-print, type",
+            "checked_at": "2026-11-17",
+            "note": "DOI登记确认正式刊会、作者和刊期年。",
+            "text": "DOI登记确认正式刊会、作者和刊期年。"
+          }
+        ],
+        "source_in_current_corpus": false,
+        "abstract_kind": "not_available",
+        "why_keep_zh": "Zeng学位论文表3.1与参考文献[63]提供线索，完整题名核对正式TASC记录后外部补回；当前生产DOI及题名回查均未命中。主要贡献是低温HTS匹配LNA。",
+        "evidence_limit_zh": "固定公开证据样例。来源标签表示本样例使用的证据来源；除Tian在线回查外，未用本样例推断当前芯寻收录状态。",
+        "importance_stars": 4,
+        "volume": "35",
+        "issue": "2",
+        "page": "1-7",
+        "review_evidence": {
+          "contribution": "target_circuit",
+          "relevance": "strong",
+          "measured_target": true,
+          "publication_type": "journal-article",
+          "publisher": "IEEE",
+          "readability": "source_abstract",
+          "evidence": [
+            {
+              "url": "https://ir.specialsci.cn/xajt/scholar/result?scholar=1f02b696e247fbf0%3AHongliang+TIAN",
+              "location": "Cryogenic C-Band Hybrid MMIC article, institutional abstract",
+              "text": "主要贡献是以外置HTS输入匹配改进4–8 GHz混合MMIC LNA，报告77 K与15 K下LNA的噪声对照实测。"
+            }
+          ],
+          "publication_evidence": [
+            {
+              "kind": "doi_registration",
+              "url": "https://api.crossref.org/works/10.1109/tasc.2024.3514608",
+              "location": "title, authors, container-title, published-print, type",
+              "checked_at": "2026-11-17",
+              "note": "DOI登记确认正式刊会、作者和刊期年。",
+              "text": "DOI登记确认正式刊会、作者和刊期年。"
+            }
+          ]
+        },
+        "origin": "external_primary_source",
+        "gap_discovery_evidence": [
+          {
+            "title": "Cryogenic C-Band Hybrid-MMIC Low-Noise Amplifier Using HTS Input Matching Network Assisted by Grey Wolf Optimizer",
+            "location": "Table 3.1, printed p.48 / PDF p.64, entry [63]; bibliography [63], printed p.129 / PDF p.145",
+            "note": "表3.1把该设计列为4–8 GHz hybrid IC，并给出比较数据；[63]提供Tian等六位作者、完整题名、TASC 35(2)、2025年。此引用未提供DOI，下一步以完整题名核对正式记录。"
+          }
+        ]
+      },
+      {
+        "doi": "10.1109/lmwt.2024.3443852",
+        "title": "Fusion Design of Cryogenic Filtering Low-Noise Amplifier With High Out-of-Band Rejection Assisted by Grey Wolf Optimizer",
+        "authors": [
+          "Hongliang Tian",
+          "Haiwen Liu",
+          "Zeren Song",
+          "Sidong Wang",
+          "Ruolin Wang",
+          "Shaofei Wang",
+          "Chao Du"
+        ],
+        "venue": "IEEE Microwave and Wireless Technology Letters",
+        "venue_name": "IEEE Microwave and Wireless Technology Letters",
+        "year": 2024,
+        "publication_status": "journal-article",
+        "publisher": "IEEE",
+        "doi_link": "https://doi.org/10.1109/lmwt.2024.3443852",
+        "primary_source": "https://doi.org/10.1109/lmwt.2024.3443852",
+        "publication_evidence": [
+          {
+            "kind": "doi_registration",
+            "url": "https://api.crossref.org/works/10.1109/lmwt.2024.3443852",
+            "location": "title, authors, container-title, published-print, type",
+            "checked_at": "2026-11-17",
+            "note": "DOI登记确认正式刊会、作者和刊期年。",
+            "text": "DOI登记确认正式刊会、作者和刊期年。"
+          }
+        ],
+        "source_in_current_corpus": false,
+        "abstract_kind": "not_available",
+        "why_keep_zh": "主要贡献为低温低噪声放大器电路。",
+        "evidence_limit_zh": "固定公开证据样例。来源标签表示本样例使用的证据来源；除Tian在线回查外，未用本样例推断当前芯寻收录状态。",
+        "importance_stars": 4,
+        "volume": "34",
+        "issue": "10",
+        "page": "1162-1165",
+        "review_evidence": {
+          "contribution": "target_circuit",
+          "relevance": "strong",
+          "measured_target": true,
+          "publication_type": "journal-article",
+          "publisher": "IEEE",
+          "readability": "source_abstract",
+          "evidence": [
+            {
+              "url": "https://ir.specialsci.cn/xajt/scholar/result?page=2&scholar=1f02b696e247fbf0%3AHongliang+TIAN",
+              "location": "Fusion Design article, institutional abstract",
+              "text": "主要贡献是100 nm InP低温滤波LNA，摘要报告5 K下4–8 GHz放大器的增益、噪声及带外抑制实测。"
+            }
+          ],
+          "publication_evidence": [
+            {
+              "kind": "doi_registration",
+              "url": "https://api.crossref.org/works/10.1109/lmwt.2024.3443852",
+              "location": "title, authors, container-title, published-print, type",
+              "checked_at": "2026-11-17",
+              "note": "DOI登记确认正式刊会、作者和刊期年。",
+              "text": "DOI登记确认正式刊会、作者和刊期年。"
+            }
+          ]
+        },
+        "origin": "external_primary_source"
+      }
+    ],
+    "version_relations": [
+      {
+        "from_doi": "10.1109/ims37964.2023.10188065",
+        "to_doi": "10.1109/tmtt.2023.3340519",
+        "relation_type": "journal_extension",
+        "status": "confirmed",
+        "evidence": [
+          {
+            "kind": "publisher_version_statement",
+            "url": "https://www.researchgate.net/publication/376634060_Monolithically_Integrated_C-Band_Low-Noise_Amplifiers_for_Use_in_Cryogenic_Large-Scale_RF_Systems",
+            "canonical_url": "https://ieeexplore.ieee.org/ielx7/22/4359079/10363625.pdf",
+            "location": "published journal p.2442, first-page manuscript footnote",
+            "excerpt": "An earlier version of this paper was presented at the IEEE MTT-S International Microwave Symposium (IMS)",
+            "note": "同一首页脚注明确给出 IMS 2023 及会议 DOI；IEEE 开放 PDF 本轮返回418，公开的已出版 CC-BY 全文与 Fraunhofer 机构题录交叉核对。"
+          }
+        ]
+      },
+      {
+        "from_doi": "10.23919/apmc55665.2022.9999965",
+        "to_doi": "10.1109/tmtt.2023.3312471",
+        "relation_type": "shared_design",
+        "status": "confirmed",
+        "evidence": [
+          {
+            "kind": "explicit_design_reuse",
+            "url": "https://research.chalmers.se/publication/538032/file/538032_Fulltext.pdf",
+            "location": "Section IV-B; Figs.10 and 12; reference [34], journal pp.1613–1614 (author PDF pp.9–10)",
+            "note": "§IV-B 的三段共源 100 nm InP HEMT 设计指向 [34]；图10电路与图12实物照片均注明 [34]，该参考文献是 APMC 2022 正式会议短文。图13分别保留100与200 μW测量。"
+          }
+        ]
+      },
+      {
+        "from_doi": "10.1109/lmwt.2024.3443852",
+        "to_doi": "10.1109/tasc.2024.3514608",
+        "relation_type": "related",
+        "status": "pending",
+        "evidence": [
+          {
+            "kind": "shared_team_and_mechanism",
+            "url": "https://doi.org/10.1109/tasc.2024.3514608",
+            "location": "title and authors",
+            "note": "同团队及低温 HTS 匹配相关设计，仅此不足以确认同一项工作；且两端均为期刊论文。"
+          }
+        ]
+      }
+    ],
+    "gap_sources": [
+      {
+        "title": "Low-Power HEMT LNAs for Quantum Computing",
+        "year": 2025,
+        "publication_status": "dissertation",
+        "url": "https://research.chalmers.se/publication/547668/file/547668_Fulltext.pdf",
+        "seed_publication_dois": [
+          "10.1109/tmtt.2023.3312471"
+        ],
+        "references": [
+          {
+            "title": "Cryogenic C-Band Hybrid-MMIC Low-Noise Amplifier Using HTS Input Matching Network Assisted by Grey Wolf Optimizer",
+            "location": "Table 3.1, printed p.48 / PDF p.64, entry [63]; bibliography [63], printed p.129 / PDF p.145",
+            "note": "表3.1把该设计列为4–8 GHz hybrid IC，并给出比较数据；[63]提供Tian等六位作者、完整题名、TASC 35(2)、2025年。此引用未提供DOI，下一步以完整题名核对正式记录。"
+          }
+        ]
+      }
+    ],
+    "source_access": [
+      {
+        "url": "https://ieeexplore.ieee.org/ielx7/22/4359079/10363625.pdf",
+        "status": "unavailable",
+        "detail": "HTTP 418 on 2026-11-17; publisher page is open-access, copied published first page was read at the linked public mirror."
+      },
+      {
+        "url": "https://publica.fraunhofer.de/entities/publication/a1052bb2-def9-4914-a7c0-7a4b7c102250",
+        "status": "available",
+        "detail": "Author institution bibliographic record confirms Heinz title, authors, journal and DOI."
+      },
+      {
+        "url": "https://research.chalmers.se/publication/538032/file/538032_Fulltext.pdf",
+        "status": "available",
+        "detail": "Author institution full text read, sections and figures checked."
+      },
+      {
+        "url": "https://research.chalmers.se/publication/547668/file/547668_Fulltext.pdf",
+        "status": "available",
+        "detail": "Author institution thesis read at Table3.1 and ref63."
+      }
+    ]
+  }
+}

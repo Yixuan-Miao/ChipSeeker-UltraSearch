@@ -33,17 +33,21 @@ python CLIENT collect --query-spec WORKSPACE/检索数据/queries.json --checkpo
 
 ## Curated Paper Data
 
+New runs use schema v2 and default to `broad_discovery`. The optional `circuit_review` profile requires source-backed eligibility evidence as described in [circuit-review.md](circuit-review.md). Legacy v1 reports remain renderable. The renderer applies saved decisions and evidence checks; semantic contribution judgments remain the customer's agent's responsibility.
+
 The collector's union is a candidate pool, **not** a reviewed reading list. The AI must screen it, hydrate plausible abstracts, rank retained papers and write `检索数据/papers.json`. The renderer does not perform semantic screening or invent missing reasons.
 
 ```json
 {
-  "schema": "ultrasearch-screened-papers/v1",
+  "schema": "ultrasearch-screened-papers/v2",
+  "review_policy": {"profile": "broad_discovery", "max_results": 200},
   "generated_at": "YYYY-MM-DDTHH:MM:SS+00:00",
   "summary": {
     "research_direction": "the user's original direction",
     "status": "completed or partial",
     "successful_queries": 0,
     "failed_queries": 0,
+    "pending_queries": 0,
     "unique_papers": 0,
     "unresolved_query_ids": [],
     "stopping_reason_zh": "Evidence-based stopping reason, not an absolute completeness claim.",
@@ -87,6 +91,23 @@ Keep all useful API metadata, evidence and screening decisions in this file even
 For an actual local PDF, set its absolute path or a path relative to the topic folder. The renderer links it only if that PDF exists. Never link guessed downloaded paths. For supplementary theses/reports, include `title`, `year`, `authors`, `source`, `pdf` and `why_keep_zh`, and do not count them as additional peer-reviewed demonstrations.
 
 ## Render and Check
+
+The renderer also writes `report-data.json` and `publications.ris` inside the data folder. The structured data preserves policy decisions, exclusions, version evidence and gap receipts. Markdown and HTML display confirmed work groups with the journal first; RIS retains each publication DOI separately. On refresh, saved exclusions and verified relationships are reused from `report-data.json` even when newly fetched candidates omit them. Use the explicit exclusion command before regenerating a report:
+
+```text
+python OUTPUT exclude --workspace WORKSPACE --doi PUBLICATION_DOI --reason REASON
+python OUTPUT render --workspace WORKSPACE --overwrite
+```
+
+The exclusion updates the source ledger. Regeneration still requires the existing overwrite check for human edits. Reinstatement requires deliberately removing the exclusion from both source and saved report ledgers.
+
+Run the shipped sample without credentials, network, private paths, paper databases or third-party dependencies:
+
+```text
+python scripts/verify_circuit_review.py --parent OUTPUT_PARENT
+```
+
+This replays the public evidence fixture and generates a four-work, six-publication example, five audited counterexamples, both directions of the Heinz and Zeng version relationships, and title-based discovery from the Zeng thesis reference. Live publisher checks are independent of this regression.
 
 ```text
 python OUTPUT render --workspace WORKSPACE

@@ -45,6 +45,10 @@ Your own AI performs query planning, expansion, screening and reporting. This pu
 
 ## Research and Outputs
 
+Broad discovery is the default. An optional focused circuit-review profile prioritizes formal IEEE publications from the preceding ten years whose main contribution is the requested circuit. Explicit dates and source limits apply in both modes. Source-backed decisions and manual exclusions persist across refreshes. Confirmed conference and journal versions appear together, journal first, while RIS keeps the original publications separate. Specialist-source and reference gaps trigger bounded agent-side external checks. The remote service continues to provide retrieval without a server-side LLM.
+
+For a credential-free offline acceptance run, execute `python skills/chipseeker-ultra-search/scripts/verify_circuit_review.py --parent OUTPUT_PARENT`. It generates paired reports from fixed public metadata and original-paper evidence. The installed Skill includes the same verification command and fixture.
+
 For broad prompts such as `ADC` or `CTLE`, the agent asks targeted questions until a useful subdirection emerges. An optional single Lite probe can help identify actual themes. Explicit software trials and broad overviews remain available as bounded, representative searches.
 
 For a scoped direction, the agent lays out distinct retrieval questions, learns new terms from titles and abstracts, and follows relevant leads. It does not equate paraphrase count, repeated top hits or an API candidate cap with completeness. Paper facts require source evidence; unknown or failed retrievals remain explicit.
