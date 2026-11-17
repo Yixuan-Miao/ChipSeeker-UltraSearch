@@ -515,6 +515,13 @@ def _checkpoint_path(directory, query_id):
     return Path(directory) / f"{safe}.json"
 
 
+def _request_fingerprint(request, config):
+    return hashlib.sha256(json.dumps(
+        {"request": request, "base_url": config["base_url"], "email": config.get("email", "")},
+        ensure_ascii=False, sort_keys=True,
+    ).encode("utf-8")).hexdigest()
+
+
 def _run_entry(entry, defaults, checkpoint_dir, retries):
     query_id = str(entry.get("id") or hashlib.sha1(json.dumps(entry, sort_keys=True).encode()).hexdigest()[:12])
     entry = dict(entry)
@@ -523,10 +530,7 @@ def _run_entry(entry, defaults, checkpoint_dir, retries):
     request = normalize_request(entry, defaults)
     entry = _query_entry(entry, request)
     config = load_config()
-    fingerprint = hashlib.sha256(json.dumps(
-        {"request": request, "base_url": config["base_url"], "email": config.get("email", "")},
-        ensure_ascii=False, sort_keys=True,
-    ).encode("utf-8")).hexdigest()
+    fingerprint = _request_fingerprint(request, config)
     existing = {}
     if checkpoint and checkpoint.exists():
         existing = _read_json(checkpoint, {})
@@ -647,6 +651,10 @@ def command_collect(args):
     entries = list(spec.get("queries", []))
     if not entries:
         raise ValueError("The query spec contains no queries.")
+    if "max_api_requests" in spec:
+        limit = spec["max_api_requests"]
+        if type(limit) is not int or limit < len(entries):
+            raise ValueError("Query plan exceeds max_api_requests; remove unapproved new entries before collecting.")
     ids = [str(entry.get("id", "")) for entry in entries if isinstance(entry, dict)]
     if len(ids) != len(entries) or len(set(ids)) != len(ids) or any(not re.fullmatch(r"[A-Za-z0-9_.-]+", query_id) for query_id in ids):
         raise ValueError("Every query needs a unique ID containing only letters, digits, dots, underscores or hyphens.")
@@ -654,6 +662,13 @@ def command_collect(args):
         raise ValueError("purpose must be discovery or metadata.")
     defaults = dict(spec.get("defaults", {}))
     entries = [_query_entry(entry, normalize_request(entry, defaults)) for entry in entries]
+    if "max_api_requests" in spec and args.checkpoint_dir:
+        config = load_config()
+        for entry in entries:
+            checkpoint = _read_json(_checkpoint_path(args.checkpoint_dir, entry["id"]), {})
+            saved = checkpoint.get("_request_fingerprint")
+            if saved and saved != _request_fingerprint(normalize_request(entry, defaults), config):
+                raise ValueError(f"Budgeted query {entry['id']} changed; preserve its original request and register a new ID.")
     workers = max(1, min(int(args.workers), 4, len(entries)))
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         futures = {executor.submit(_run_entry, entry, defaults, args.checkpoint_dir, args.retries): index for index, entry in enumerate(entries)}

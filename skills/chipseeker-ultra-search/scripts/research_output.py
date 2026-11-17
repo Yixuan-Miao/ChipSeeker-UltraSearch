@@ -143,6 +143,13 @@ def knowledge_label(paper):
     return "仅题目/元数据；摘要缺失"
 
 
+def discovery_trace(paper):
+    ids = list(dict.fromkeys(str(hit["query_id"]) for hit in paper.get("retrievals") or []
+                             if hit.get("query_id") and hit.get("purpose") != "metadata"))
+    ids.extend(str(key) for key in paper.get("gap_receipt_keys") or [])
+    return " · ".join(ids[:4]) + (f" · 另 {len(ids) - 4} 项见检索数据" if len(ids) > 4 else "")
+
+
 def normalize_report(payload, workspace):
     if not isinstance(payload, dict) or not isinstance(payload.get("papers"), list):
         raise ValueError("papers.json must be an object containing a curated papers list.")
@@ -163,9 +170,10 @@ def normalize_report(payload, workspace):
         payload = apply_review_policy(payload)
     eligible_records = {publication_key(p): p for p in payload["papers"]}
     eligible = set(eligible_records)
+    positions = {key: index for index, key in enumerate(eligible_records)}
     decisions = {tuple(d.get("publication_ids") or []): d for d in payload.get("screening_audit") or []}
     grouped = group_work_versions(all_publications, relations)
-    retained = []
+    ranked = []
     for work in grouped["papers"]:
         members = [work, *(work.get("versions") or [])]
         main = [eligible_records[publication_key(p)] for p in members if publication_key(p) in eligible]
@@ -190,7 +198,8 @@ def normalize_report(payload, workspace):
         visible_dois = {normalize_doi(p.get("doi")) for p in [primary, *primary["versions"]]}
         primary["version_relations"] = [relation for relation in work.get("version_relations") or []
                                         if {relation["from_doi"], relation["to_doi"]} <= visible_dois]
-        retained.append(primary)
+        ranked.append((min(positions[publication_key(p)] for p in main), primary))
+    retained = [row for _, row in sorted(ranked, key=lambda item: item[0])]
     if "review_policy" not in payload and not relations:
         retained = all_publications
     grouped["papers"] = retained
@@ -258,6 +267,7 @@ def normalize_report(payload, workspace):
         "research_branches": payload.get("research_branches") or [],
         "source_checks": payload.get("source_checks") or [],
         "reference_leads": payload.get("reference_leads") or [],
+        "searches": payload.get("searches") or [],
     }
 
 
@@ -333,6 +343,8 @@ def render_markdown(model):
         lines.extend([f'<a id="{p["_id"].lower()}"></a>', f"### {p['_id']} · {md(p['title'])}", "", f"作者：{md(p['_authors'] or '未提供')}。", "", f"{md(p.get('year'))} · {md(p['_venue'])} · {p['_origin']} · {p['_evidence']}", "", f"**为什么保留：** {md(p.get('why_keep_zh') or '未提供')}", ""])
         if p.get("evidence_limit_zh"):
             lines.extend([f"**证据边界：** {md(p['evidence_limit_zh'])}", ""])
+        if trace := discovery_trace(p):
+            lines.extend([f"**发现路径：** {md(trace)}", ""])
         lines.extend([markdown_links(p), ""])
         for field in ("version_additions_zh", "measurement_note_zh"):
             if p.get(field):
@@ -403,6 +415,7 @@ def render_html(model):
 <div class="paper-meta"><span>{esc(p.get('year'))} · {esc(p['_venue'])}{tier}</span><span class="stars" aria-label="阅读优先级 {p['_stars']} 星">{rating}</span><span class="origin">{esc(p['_origin'])}</span></div>
 <h2>{esc(p['title'])}</h2>{version_html(p)}<p class="authors">{esc(p['_authors'] or '作者未提供')}</p>
 <p class="match">{esc(p.get('match_description_zh'))}</p><p class="reason">{esc(p.get('why_keep_zh') or '保留理由未提供')}</p><p class="muted">{esc(p.get('version_additions_zh'))} {esc(p.get('measurement_note_zh'))}</p>
+{f'<p class="muted">发现路径：{esc(discovery_trace(p))}</p>' if discovery_trace(p) else ''}
 {caveat}<div class="paper-bottom"><nav class="paper-links" aria-label="{p['_id']}论文链接">{html_links(p)}</nav><span class="evidence-label">{esc(p['_evidence'])}</span></div>{abstract}</div></article>''')
     venues = sorted({p["_venue"] for p in model["papers"]})
     origins = sorted({p["_origin"] for p in model["papers"]})
@@ -467,6 +480,15 @@ def render_workspace(workspace, *, overwrite=False):
         for key in ("screening_audit", "gap_checks"):
             if key not in payload:
                 payload[key] = saved.get(key) or ([] if key == "screening_audit" else {})
+    if payload.get("schema") == "ultrasearch-screened-papers/v2" or "review_policy" in payload:
+        from review_workflow import plan_review, prepare_review
+
+        payload = prepare_review(payload, workspace / DATA_DIR)
+        pending_review = plan_review(payload)["screening_candidates"]
+        if pending_review:
+            payload["summary"] = {**(payload.get("summary") or {}), "status": "partial_pending_screening"}
+            payload["report_notes_zh"] = [*(payload.get("report_notes_zh") or []),
+                                          f"{len(pending_review)} 项库外候选尚待证据筛选，未自动写入主表。"]
     model = normalize_report(payload, workspace)
     structured = {
         "schema": "ultrasearch-report/v2", "generated_at": payload.get("generated_at"),
@@ -475,7 +497,7 @@ def render_workspace(workspace, *, overwrite=False):
         "papers": [_public_record(p) for p in model["papers"]],
         "screening_audit": model["audit"], "version_relations": model["relations"],
         "relation_audit": model["relation_audit"],
-        **{key: model[key] for key in ("gap_checks", "gap_check_plan", "research_branches", "source_checks", "reference_leads")},
+        **{key: model[key] for key in ("gap_checks", "gap_check_plan", "research_branches", "source_checks", "reference_leads", "searches")},
     }
     outputs = [(workspace / MD_NAME, render_markdown(model)), (workspace / HTML_NAME, render_html(model)),
                (workspace / DATA_DIR / "report-data.json", json.dumps(structured, ensure_ascii=False, indent=2)),
@@ -558,6 +580,9 @@ def main():
     exclude.add_argument("--workspace", required=True)
     exclude.add_argument("--doi", required=True)
     exclude.add_argument("--reason", default="用户手动排除")
+    review = sub.add_parser("review-next", help="Plan or record follow-ups before rendering.")
+    review.add_argument("--workspace", required=True)
+    review.add_argument("--receipt", help="Record a follow-up and queue verified discoveries for screening.")
     args = parser.parse_args()
     try:
         if args.command == "init":
@@ -565,6 +590,10 @@ def main():
             result = {"workspace": str(workspace), "data_dir": str(workspace / DATA_DIR), "queries": str(workspace / DATA_DIR / "queries.json"), "checkpoints": str(workspace / DATA_DIR / "checkpoints"), "union": str(workspace / DATA_DIR / "union.json")}
         elif args.command == "exclude":
             result = exclude_publication(args.workspace, args.doi, args.reason)
+        elif args.command == "review-next":
+            from review_workflow import review_workspace
+
+            result = review_workspace(Path(args.workspace).expanduser().resolve() / DATA_DIR, args.receipt)
         else:
             result = render_workspace(args.workspace, overwrite=args.overwrite)
         print(json.dumps(result))

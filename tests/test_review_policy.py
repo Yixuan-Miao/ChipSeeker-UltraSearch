@@ -299,7 +299,8 @@ def test_gap_receipts_reuse_success_without_caching_a_failure_as_absence():
     for check, outcome in zip(plan["checks"], outcomes):
         saved = review.record_gap_check(saved, check, outcome)
     resumed = review.plan_gap_checks(source_checks=sources, completed_checks=saved["gap_checks"])
-    assert [row["cache_key"] for row in resumed["checks"]] == ["formal-source:unavailable", "formal-source:failed"]
+    assert [row["cache_key"] for row in resumed["checks"]] == ["formal-source:missing", "formal-source:unavailable", "formal-source:failed"]
+    assert saved["gap_checks"]["formal-source:missing:index"]["channel"] == "index"
     assert saved["gap_checks"]["formal-source:unavailable"]["status"] == "source_unavailable"
     assert not review.plan_gap_checks(source_checks=sources, allow_external=False)["checks"]
 

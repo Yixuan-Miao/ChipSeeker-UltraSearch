@@ -10,6 +10,7 @@ formal-publication provenance on its own.
 from copy import deepcopy
 from datetime import date
 import importlib.util
+import math
 from pathlib import Path
 import re
 import unicodedata
@@ -23,10 +24,19 @@ DECISION_LABELS = {
     "outside_window": "超出时间窗",
     "source_priority": "来源优先级不符",
     "off_topic": "与目标电路相关性不足",
+    "requirement_not_met": "不满足明确要求",
     "insufficient_evidence": "证据不足待核验",
     "output_limit": "超过本次展示上限",
 }
-FORMAL_PROVENANCE = {"publisher_record", "doi_registration", "official_proceedings"}
+FORMAL_PROVENANCE = {"publisher_record", "doi_registration", "official_proceedings", "institutional_publication_record"}
+# Unit families are deliberately distinct: bits, symbols and samples are not interchangeable.
+UNITS = {
+    "S/s": ("sample_rate", 1), "kS/s": ("sample_rate", 1e3), "MS/s": ("sample_rate", 1e6), "GS/s": ("sample_rate", 1e9),
+    "b/s": ("bit_rate", 1), "Mb/s": ("bit_rate", 1e6), "Gb/s": ("bit_rate", 1e9), "Tb/s": ("bit_rate", 1e12),
+    "Bd": ("symbol_rate", 1), "MBd": ("symbol_rate", 1e6), "GBd": ("symbol_rate", 1e9),
+    "Hz": ("frequency", 1), "kHz": ("frequency", 1e3), "MHz": ("frequency", 1e6), "GHz": ("frequency", 1e9),
+    "K": ("temperature", 1), "mK": ("temperature", 1e-3),
+}
 
 
 def _date(value):
@@ -59,6 +69,7 @@ def resolve_policy(policy=None, generated_at=None):
         "attach_out_of_scope_versions": False,
         "max_results": 200,
         "max_gap_checks": 12,
+        "requirements": [],
     }
     resolved.update(options)
     if "years" in options:
@@ -75,6 +86,15 @@ def resolve_policy(policy=None, generated_at=None):
     for key in ("preferred_publishers", "allowed_publishers", "allowed_publication_types"):
         if not isinstance(resolved[key], list) or any(not isinstance(value, str) or not value.strip() for value in resolved[key]):
             raise ValueError(key + " must be a list of non-empty strings")
+    requirements = resolved["requirements"]
+    if (not isinstance(requirements, list) or any(
+        not isinstance(item, dict) or not isinstance(item.get("id"), str) or not item["id"].strip()
+        or item.get("unit") not in {None, *UNITS}
+        or any(key in item and (not _numeric(item[key]) or not item.get("unit")) for key in ("min", "max"))
+        or ("min" in item and "max" in item and item["min"] > item["max"])
+        for item in requirements
+    ) or len({item["id"] for item in requirements}) != len(requirements)):
+        raise ValueError("requirements need unique IDs and valid typed bounds")
     return resolved
 
 
@@ -194,6 +214,43 @@ def _publisher_name(value):
     return "ieee" if name == "institute of electrical and electronics engineers (ieee)" else name
 
 
+def _numeric(value):
+    return type(value) in {int, float} and math.isfinite(value)
+
+
+def assess_requirements(requirements, observations):
+    results = []
+    for req in requirements:
+        facts = observations.get(req["id"]) or []
+        if isinstance(facts, dict):
+            facts = [facts]
+        applicable = []
+        verdicts = []
+        for fact in facts:
+            if not isinstance(fact, dict):
+                continue
+            sources = _evidence(fact.get("evidence"))
+            if not sources or any(req.get(key) and fact.get(key) != req[key]
+                                  for key in ("metric", "subject", "basis")):
+                continue
+            value = fact.get("value")
+            if req.get("unit"):
+                expected = UNITS[req["unit"]]
+                observed = UNITS.get(fact.get("unit"))
+                if not observed or observed[0] != expected[0] or not _numeric(value):
+                    continue
+                value = value * observed[1] / expected[1]
+            elif value is None:
+                continue
+            applicable.append({**fact, "evidence": sources})
+            verdicts.append(("min" not in req or value >= req["min"])
+                            and ("max" not in req or value <= req["max"])
+                            and ("equals" not in req or value == req["equals"]))
+        results.append({"id": req["id"], "status": "met" if any(verdicts) else "not_met" if verdicts else "unknown",
+                        "observations": applicable})
+    return results
+
+
 def evaluate_candidate(paper, policy):
     """Return the auditable decision; publication origin and readability stay separate."""
     evidence = paper.get("review_evidence") or {}
@@ -212,6 +269,9 @@ def evaluate_candidate(paper, policy):
     exception = (strict and evidence.get("exception_reason") and evidence.get("relevance") == "strong"
                  and evidence.get("measured_target") is True and citations)
     reasons = []
+    requirements = assess_requirements(policy.get("requirements") or [], evidence.get("observations") or {})
+    if policy.get("library_only") and paper.get("origin") == "external_primary_source" and paper.get("source_in_current_corpus") is not True:
+        reasons.append("source_priority")
     if strict and evidence.get("contribution") in {"system", "supporting_module", "other_circuit"} and citations:
         reasons.append("system_contribution")
     if limited_dates and in_window is False:
@@ -222,6 +282,10 @@ def evaluate_candidate(paper, policy):
         reasons.append("source_priority")
     if evidence.get("relevance") == "weak" and citations:
         reasons.append("off_topic")
+    if any(item["status"] == "not_met" for item in requirements):
+        reasons.append("requirement_not_met")
+    if any(item["status"] == "unknown" for item in requirements):
+        reasons.append("insufficient_evidence")
     if ((limited_dates and in_window is None) or (types and not kind) or ((publishers or allowed_publishers) and not publisher)
             or (strict and (evidence.get("contribution") not in {"target_circuit", "system", "supporting_module", "other_circuit"}
                             or evidence.get("relevance") not in {"strong", "weak"}
@@ -237,6 +301,8 @@ def evaluate_candidate(paper, policy):
         "readability": evidence.get("readability") or ("full_text" if paper.get("full_text_read") else "unknown"),
         "date_precision": precision,
         "contribution": evidence.get("contribution") or "unknown",
+        "relevance": evidence.get("relevance") or "unknown",
+        "requirements": requirements,
         "measured_target": evidence.get("measured_target"),
         "evidence": citations,
         "publication_evidence": publication,
@@ -276,8 +342,19 @@ def apply_review_policy(payload, *, exclusions=None):
     audit = {tuple(row["publication_ids"]): row for row in result.get("screening_audit", [])}
     retained = []
     displayed_works = set()
-    for paper in papers:
-        decision = evaluate_candidate(paper, policy)
+    evaluated = [(paper, evaluate_candidate(paper, policy)) for paper in papers]
+    if policy.get("rank_by_evidence") or policy["requirements"]:
+        def evidence_rank(item):
+            paper, decision = item
+            supported = bool(decision["evidence"] or any(row["observations"] for row in decision["requirements"]))
+            venue = paper.get("venue_quality")
+            return (supported and decision["relevance"] == "strong",
+                    supported and decision["contribution"] == "target_circuit",
+                    supported and decision["measured_target"] is True,
+                    venue if _numeric(venue) else 0)
+
+        evaluated.sort(key=evidence_rank, reverse=True)
+    for paper, decision in evaluated:
         excluded = next((entry for entry in ledger if _matches_exclusion(paper, entry)), None)
         if excluded:
             decision.update(decision="manual_exclusion", label=DECISION_LABELS["manual_exclusion"],
@@ -307,7 +384,8 @@ def apply_review_policy(payload, *, exclusions=None):
         result.get("research_branches") or [], result.get("searches") or [], result.get("source_checks") or [],
         reference_leads=result.get("reference_leads") or [], max_checks=policy["max_gap_checks"],
         remaining_budget=policy.get("remaining_budget"), completed_checks=result.get("gap_checks") or {},
-        allow_external=policy["external_check"],
+        allow_external=policy["external_check"], remaining_api_budget=policy.get("remaining_api_budget"),
+        remaining_external_budget=policy.get("remaining_external_budget"),
     )
     return result
 
@@ -329,21 +407,35 @@ def query_observation(query):
     return "completed_visible_results"
 
 
-def record_gap_check(payload, check, outcome, *, evidence=(), query_ids=()):
+EXTERNAL_ACTIONS = {"check_formal_source", "check_branch", "follow_reference_lead"}
+
+
+def record_gap_check(payload, check, outcome, *, evidence=(), query_ids=(), discoveries=()):
     """Save a repeatable check receipt, including failures and index visibility."""
-    allowed = {"completed_found", "completed_no_match", "index_no_records", "source_unavailable", "failed", "pending", "truncated"}
+    allowed = {"completed_found", "completed_no_match", "index_no_records", "source_unavailable",
+               "failed", "pending", "truncated", "budget_exhausted", "not_run"}
     if outcome not in allowed:
         raise ValueError("Unknown gap-check outcome: " + str(outcome))
     result = deepcopy(payload)
     receipts = result.setdefault("gap_checks", {})
-    receipts[check["cache_key"]] = {"cache_key": check["cache_key"], "action": check["action"],
+    channel = check.get("channel") or ("external" if check["action"] in EXTERNAL_ACTIONS else "index")
+    # Accept older saved index observations without overwriting a completed external check.
+    key = check["cache_key"] + ":index" if outcome == "index_no_records" and channel == "external" else check["cache_key"]
+    if key != check["cache_key"]:
+        channel = "index"
+    attempts = receipts.get(key, {}).get("attempts", 0)
+    if outcome not in {"budget_exhausted", "pending", "not_run"}:
+        attempts += 1
+    receipts[key] = {"cache_key": key, "action": check["action"], "channel": channel,
                                     "status": outcome, "evidence": _evidence(evidence),
-                                    "query_ids": list(query_ids), "trigger": check.get("reason", "")}
+                                    "query_ids": list(query_ids), "trigger": check.get("reason", ""),
+                                    "discoveries": deepcopy(list(discoveries)), "attempts": attempts}
     return result
 
 
 def plan_gap_checks(branches=(), queries=(), source_checks=(), *, reference_leads=(),
-                    max_checks=12, remaining_budget=None, completed_checks=(), allow_external=True):
+                    max_checks=12, remaining_budget=None, completed_checks=(), allow_external=True,
+                    remaining_api_budget=None, remaining_external_budget=None):
     """Plan bounded agent-side checks, reusing completed cache keys.
 
     Source checks must distinguish a formal publisher import from a preprint
@@ -351,52 +443,97 @@ def plan_gap_checks(branches=(), queries=(), source_checks=(), *, reference_lead
     Every plan item includes its trigger and evidence link supplied by the agent.
     The planner performs no network requests and no server-side model work.
     """
-    if max_checks < 0 or remaining_budget is not None and remaining_budget < 0:
+    if any(not isinstance(limit, int) or isinstance(limit, bool) or limit < 0
+           for limit in (max_checks, remaining_budget, remaining_api_budget, remaining_external_budget) if limit is not None):
         raise ValueError("gap-check budgets cannot be negative")
     budget = min(max_checks, remaining_budget) if remaining_budget is not None else max_checks
     plans = []
     observations = []
+    by_query = {qid: branch for branch in branches for qid in branch.get("query_ids", [])}
     for query in queries:
         state = query_observation(query)
         observations.append({"query_id": query.get("query_id"), "state": state,
                              "coverage_scope": "visible_index_only", "result_count": query.get("result_count")})
         if state in {"failed", "pending"}:
             plans.append({"cache_key": "resume:" + str(query.get("query_id")), "action": "resume_query",
-                          "reason": state, "query_id": query.get("query_id"),
+                          "reason": state, "query_id": query.get("query_id"), "api_cost": 0,
                           "client_request_id": query.get("client_request_id")})
         if state == "truncated":
+            branch = by_query.get(query.get("query_id"), {})
+            if branch.get("qualified_gain") == 0 or branch.get("resolved") is True:
+                continue
             years = query.get("years") or []
-            split = "years" if len(years) == 2 and years[0] < years[1] else "venue_or_technical_branch"
+            split = branch.get("partition_by") or ("years" if len(years) == 2 and years[0] < years[1] else "venue_or_technical_branch")
             plans.append({"cache_key": "split:" + str(query.get("query_id")), "action": "partition_query",
-                          "reason": "truncated", "query_id": query.get("query_id"), "partition_by": split})
-    if allow_external:
-        for source in source_checks:
-            if source.get("strong_topic_match") and not source.get("formal_records_seen"):
-                plans.append({"cache_key": "formal-source:" + str(source["source_id"]),
-                              "action": "check_formal_source", "reason": "specialist_formal_source_missing",
-                              "source_id": source["source_id"], "evidence": source.get("evidence", []),
-                              "preprint_doi_is_coverage_evidence": False})
-        for branch in branches:
-            if branch.get("candidate_count", 0) <= branch.get("sparse_threshold", 2):
-                plans.append({"cache_key": "branch:" + str(branch["branch_id"]), "action": "check_branch",
-                              "reason": "sparse_branch", "branch_id": branch["branch_id"],
-                              "terms": branch.get("terms", []), "sources": branch.get("sources", [])})
-        for lead in reference_leads:
-            plans.append({"cache_key": "lead:" + str(lead["lead_id"]), "action": "follow_reference_lead",
-                          "reason": "benchmark_or_citation_or_author_lead", "lead_id": lead["lead_id"],
-                          "evidence": lead.get("evidence", []), "terms": lead.get("terms", []),
-                          "max_hops": 1})
-    completed = set()
+                          "reason": "truncated", "query_id": query.get("query_id"), "partition_by": split,
+                          "priority": branch.get("priority", 1), "api_cost": branch.get("partition_cost", 1)})
+    observed_query_ids = {entry["query_id"] for entry in observations if entry["state"] != "not_run"}
+    branch_observations = []
+    for branch in branches:
+        branch_observations.append({
+            "branch_id": branch["branch_id"], "priority": branch.get("priority", 1),
+            "status": ("resolved" if branch.get("resolved") else
+                       "tested" if observed_query_ids.intersection(branch.get("query_ids") or []) else "not_run"),
+            "qualified_count": branch.get("qualified_count"), "qualified_gain": branch.get("qualified_gain"),
+        })
+    for source in source_checks:
+        if source.get("strong_topic_match") and not source.get("formal_records_seen"):
+            plans.append({"cache_key": "formal-source:" + str(source["source_id"]),
+                          "action": "check_formal_source", "reason": "specialist_formal_source_missing",
+                          "source_id": source["source_id"], "evidence": source.get("evidence", []),
+                          "priority": source.get("priority", 4), "preprint_doi_is_coverage_evidence": False})
+    for branch in branches:
+        if not branch.get("resolved") and branch.get("qualified_count", branch.get("candidate_count", 0)) <= branch.get("sparse_threshold", 2):
+            plans.append({"cache_key": "branch:" + str(branch["branch_id"]), "action": "check_branch",
+                          "reason": "sparse_branch", "branch_id": branch["branch_id"], "priority": branch.get("priority", 2),
+                          "terms": branch.get("terms", []), "sources": branch.get("sources", [])})
+    for lead in reference_leads:
+        plans.append({"cache_key": "lead:" + str(lead["lead_id"]), "action": "follow_reference_lead",
+                      "reason": "benchmark_or_citation_or_author_lead", "lead_id": lead["lead_id"],
+                      "evidence": lead.get("evidence", []), "terms": lead.get("terms", []),
+                      "priority": lead.get("priority", 3), "max_hops": 1})
+    history = {}
     receipts = completed_checks.values() if isinstance(completed_checks, dict) else completed_checks
     for receipt in receipts:
-        if isinstance(receipt, str):
-            completed.add(receipt)
-        elif receipt.get("status") in {"completed_found", "completed_no_match", "index_no_records"}:
-            completed.add(receipt["cache_key"])
+        if isinstance(receipt, dict):
+            history[receipt["cache_key"]] = receipt
+        else:
+            history[receipt] = {"status": "completed_found"}
     unique = {}
     for plan in plans:
-        if plan["cache_key"] not in completed:
-            unique.setdefault(plan["cache_key"], plan)
-    pending = list(unique.values())
-    return {"checks": pending[:budget], "deferred_checks": pending[budget:], "observations": observations,
-            "budget": budget, "external_check": allow_external}
+        external = plan["action"] in EXTERNAL_ACTIONS
+        previous = history.get(plan["cache_key"], {})
+        status = previous.get("status", "not_run")
+        if status in {"completed_found", "completed_no_match"} or status == "index_no_records" and not external:
+            continue
+        cost = plan.get("api_cost", 0 if external else 1)
+        if type(cost) is not int or cost < 0:
+            raise ValueError("gap-check api_cost must be a nonnegative integer")
+        unique.setdefault(plan["cache_key"], {**plan, "channel": "external" if external else "index",
+                                               "api_cost": cost, "previous_status": status})
+    pending = sorted(unique.values(), key=lambda plan: -plan.get("priority", 1))
+    # Keep a slot for a good external lead, even if many capped queries score highly.
+    if allow_external and budget and remaining_external_budget != 0:
+        first_external = next((plan for plan in pending if plan["channel"] == "external"), None)
+        if first_external and first_external not in pending[:budget]:
+            pending.remove(first_external)
+            pending.insert(budget - 1, first_external)
+    selected, deferred, skipped = [], [], []
+    api_left = remaining_api_budget
+    external_left = remaining_external_budget
+    for plan in pending:
+        if not allow_external and plan["channel"] == "external":
+            skipped.append({**plan, "status": "library_only"})
+        elif (len(selected) >= budget or api_left is not None and plan["api_cost"] > api_left
+              or plan["channel"] == "external" and external_left == 0):
+            deferred.append({**plan, "status": "budget_exhausted"})
+        else:
+            selected.append(plan)
+            if api_left is not None:
+                api_left -= plan["api_cost"]
+            if plan["channel"] == "external" and external_left is not None:
+                external_left -= 1
+    return {"checks": selected, "deferred_checks": deferred, "skipped_checks": skipped, "observations": observations,
+            "branch_observations": branch_observations,
+            "budget": budget, "remaining_api_budget": remaining_api_budget,
+            "remaining_external_budget": remaining_external_budget, "external_check": allow_external}

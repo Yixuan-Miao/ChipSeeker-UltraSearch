@@ -47,7 +47,7 @@ Keep the plan at `TOPIC_WORKSPACE/检索数据/queries.json`, the union at `检�
 
 The AI may store a compact `scope`, `search_map`, query `rationale` and observed `findings` alongside the existing query fields. These local planning fields are not sent to the API and do not change billing. Use them to keep unresolved research branches visible across rounds, not to generate extra user-facing planning documents. See [search-strategy.md](search-strategy.md).
 
-Descriptive budget and branch-status fields are not executable controls. `collect` runs every unfinished query entry in the supplied plan. Add only an authorized, useful batch; preserve prior completed entries for checkpoint reuse. Count any scope probe and planned metadata lookups against the user's limit. Do not append dozens of speculative queries and assume the client will decide when to stop.
+`max_api_requests` optionally caps the total number of registered query IDs in a plan, including pending, hydration and scope probes. `collect` rejects an oversized plan before sending anything, but still runs every unfinished query in an allowed plan. Other descriptive budget fields are not executable limits. Append only the next authorized batch; preserve previous entries and checkpoints.
 
 Set `purpose: discovery` (the default) for paper discovery and `purpose: metadata` for DOI/title abstract hydration. This field stays local: it does not change server retrieval or billing. Metadata lookups enrich the retained record but do not count as independent discovery evidence. Both kinds of successful requests cost one credit, even with zero results.
 

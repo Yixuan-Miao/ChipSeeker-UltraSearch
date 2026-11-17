@@ -20,7 +20,7 @@ VERSION_EVIDENCE = {
     "publisher_version_statement", "author_version_statement", "explicit_design_reuse"
 }
 FORMAL_TYPES = {"journal-article", "proceedings-article", "conference-paper"}
-PUBLICATION_EVIDENCE = {"publisher_record", "doi_registration", "official_proceedings"}
+PUBLICATION_EVIDENCE = {"publisher_record", "doi_registration", "official_proceedings", "institutional_publication_record"}
 
 
 def normalize_doi(value):
