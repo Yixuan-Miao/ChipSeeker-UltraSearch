@@ -1,16 +1,22 @@
 # Knowledge-Guided Adaptive Search
 
-## Clarify Broad Prompts Before Expansion
+## Confirm the Search Goal
 
-The user's AI owns this conversational gate; the API remains a retrieval tool. Do not reject broad queries at the API layer: a single Lite query is useful for a trial or scope probe, even when a full UltraSearch would be premature.
+The agent, not the API, owns clarification. Use the full conversation and saved plan on resume. Resolve material ambiguity before spending credits.
 
-Before creating the multi-query plan, decide whether the prompt identifies a meaningful research subdirection. A bare block/acronym ("ADC", "CTLE") or generic qualifiers ("recent ADC", "good CTLE papers", "JSSC ADC") usually do not. Judge the technical scope, not word count or a fixed keyword blacklist. An application plus a concrete challenge, or an architecture plus a specific design problem, often suffices; do not require frequency, process, year and numerical specifications all at once.
+| Request | What to do |
+|---|---|
+| "Find as many cryogenic LNAs as possible, across all bands" | Start coverage mode; divide the scope into branches instead of asking the user to choose one band. |
+| "Find ten papers closest to a low-power SAR ADC for neural recording" | Start precision mode. Ask about a metric only if it changes eligibility. Do not infer a recency or venue limit. |
+| "Pulsed cryogenic LNAs for qubit readout" | The topic is actionable but the objective is unclear. Ask whether to cover the direction broadly or return only the closest matches. |
+| "ADC" | Clarify the scope with concrete choices (low-power sensor ADC, high-speed ADC, or a survey). If the objective is still unclear, ask about it next. |
+| "Find this DOI", "connect my account", or an unchanged resume | Do the requested operation without reopening scope. |
 
-Ask one concise, decision-changing question at a time, offering a few technically useful examples without choosing for the user. For ADC, ask about architecture or the problem/application: noise-shaping SAR, high-speed time-interleaved conversion, or low-power sensor interfaces. For CTLE, ask about the design objective and context: adaptive equalization, low-power SerDes, or linearity/bandwidth co-design. If the answer is still broad, follow up on the remaining ambiguity. A direction such as "pulsed cryogenic LNA for qubit readout" is already actionable; do not block it on unspecified process or band.
+Ask one decision-changing question at a time. If the user wants both, search for coverage and list the closest papers first. If they explicitly want no questions and the objective is unclear, state a bounded balanced assumption. For a quick trial use representative sampling. Do not turn a requested survey into a trial because the topic is broad.
 
-When breadth is uncertain or the user needs examples, optionally make one Lite scope probe, saving it as a discovery query with a scope-probe rationale. Inspect the diversity of retrieved titles and selected abstracts, then use those actual themes to ask a better question. Do not launch the normal 6-10-query opening while the scope remains unresolved. Record the probe's credit use and reuse its results after clarification. A result count equal to `top_k` only indicates a filled candidate page, not a total relevant-paper count or proof that the topic is too broad; low counts alone do not prove the scope is precise either.
+If the user wants examples before choosing a subtopic, offer one Lite probe and mention its one-credit cost before running it. Save it as a discovery query with a scope-probe rationale. The number returned is not a reliable measure of topic breadth.
 
-Continue clarification until the user chooses a useful subdirection. If they do not know which to choose, offer evidence-grounded options. If they explicitly want a quick software test, general overview, or no questions, honor that with a bounded trial/representative search and disclose its limits. Do not trap them in an endless interview or pretend a broad trial has exhausted the literature. Never silently impose a latest-year or technology restriction merely to make an undefined topic fit the output cap.
+Start both modes with ChipSeeker, then supplement material gaps with verified primary-source or citation checks unless the user requests library-only search. For coverage, test distinct branches and meaningful splits of capped queries; reserve room to read abstracts and follow strong leads. For precision, focus on the closest candidates and report fewer rather than pad the shortlist. User-supplied references are leads, not an exhaustive catalog or proof of independent discovery.
 
 ## Interpret the Research Problem
 
@@ -41,6 +47,7 @@ Keep the search map inside `检索数据/queries.json`, for example:
 {
   "scope": {
     "direction": "the user's original words",
+    "search_goal": "coverage",
     "required": ["actual mandatory constraints"],
     "preferences": ["soft preferences"],
     "open_leads": ["specific unsolved terminology or evidence gaps"]

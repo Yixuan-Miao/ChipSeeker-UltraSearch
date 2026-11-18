@@ -18,6 +18,12 @@ DATA_DIR = "检索数据"
 MD_NAME = "结果报告.md"
 HTML_NAME = "结果报告.html"
 ASSETS = Path(__file__).resolve().parents[1] / "assets"
+SEARCH_GOAL_LABELS = {
+    "coverage": "尽可能找全",
+    "precision": "精准精选",
+    "balanced": "兼顾覆盖与精准",
+    "representative": "代表性速查",
+}
 # Support loading the standalone renderer through importlib as well as the CLI.
 if str(Path(__file__).resolve().parent) not in sys.path:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -316,6 +322,11 @@ def status_text(model):
     return "本轮检索已完成；不承诺穷尽所有文献。"
 
 
+def search_goal_label(model):
+    goal = model["summary"].get("search_goal")
+    return SEARCH_GOAL_LABELS.get(goal, "") if isinstance(goal, str) else ""
+
+
 def markdown_links(paper):
     links = [f"[{label}](<{url}>)" for label, url in paper["_links"]]
     if paper["_local_pdf"]:
@@ -325,6 +336,8 @@ def markdown_links(paper):
 
 def render_markdown(model):
     lines = [f"# 结果报告：{md(model['title'])}", "", f"检索日期：{md(model['date'])} · 芯寻 UltraSearch", "", f"> {status_text(model)}", ""]
+    if goal := search_goal_label(model):
+        lines.extend([f"检索目标：{goal}", ""])
     lines.append("；".join(f"{label}：{value}" for value, label in stat_items(model)) + "。")
     if model["cost"] is not None:
         lines.extend(["", f"检索期间账户已用增加：{model['cost']}次" + (f"；结束时余额：{model['balance']}次。" if model["balance"] is not None else "。")])
@@ -442,13 +455,15 @@ def render_html(model):
     js = (ASSETS / "report.js").read_text(encoding="utf-8")
     logo = base64.b64encode((ASSETS / "chipseeker_logo.jpg").read_bytes()).decode("ascii")
     intro = f'<p class="intro">{esc(model["report_summary"])}</p>' if model["report_summary"] else ""
+    goal = search_goal_label(model)
+    goal_meta = f"<span>检索目标：{esc(goal)}</span>" if goal else ""
     audit = ""
     if model["audit"]:
         entries = ''.join(f'<tr><td>{esc(d.get("title"))}</td><td>{esc(d.get("label") or d.get("decision"))}</td><td>{esc(d.get("reason") or d.get("reason_zh"))}</td></tr>' for d in model["audit"])
         audit = f'<section class="limitations"><details><summary>筛选审计</summary><div class="audit-table"><table><thead><tr><th>论文</th><th>决定</th><th>证据与边界</th></tr></thead><tbody>{entries}</tbody></table></div></details></section>'
     return f'''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><title>结果报告 · {esc(model['title'])}</title><style>{css}</style></head>
-<body><main><header><div class="brand"><img src="data:image/jpeg;base64,{logo}" alt="ChipSeeker 标志" width="112" height="48">芯寻 <span>UltraSearch</span></div><h1>{esc(model['title'])}</h1><div class="header-meta"><span>{esc(model['date'])} · 论文检索结果</span><span>{esc(cost)}</span><a href="{quote(MD_NAME)}">Markdown</a></div>{intro}</header>
+<body><main><header><div class="brand"><img src="data:image/jpeg;base64,{logo}" alt="ChipSeeker 标志" width="112" height="48">芯寻 <span>UltraSearch</span></div><h1>{esc(model['title'])}</h1><div class="header-meta"><span>{esc(model['date'])} · 论文检索结果</span>{goal_meta}<span>{esc(cost)}</span><a href="{quote(MD_NAME)}">Markdown</a></div>{intro}</header>
 <section class="stats" aria-label="检索统计">{stats}</section><p class="status {'partial' if model['partial'] else 'complete'}">{status_text(model)}</p>
 <section class="results" aria-labelledby="results-heading"><div class="section-heading"><h2 id="results-heading">论文结果</h2><span id="visible-count" aria-live="polite">{len(model['papers'])} / {len(model['papers'])} 篇</span></div>
 <form class="filters" id="filters" role="search"><label class="search-field">检索结果<input type="search" id="search" placeholder="题目、作者、摘要、DOI" autocomplete="off"></label>

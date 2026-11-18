@@ -36,12 +36,16 @@ def prepare_review(payload, data_dir):
         options["external_check"] = False
         options["library_only"] = True
     payload["review_policy"] = options
+    summary = dict(payload.get("summary") or {})
+    scope = plan.get("scope")
+    if isinstance(scope, dict) and "search_goal" in scope:
+        summary["search_goal"] = scope["search_goal"]
     if "searches" in union:
         payload["searches"] = union["searches"]
-        summary = dict(payload.get("summary") or {})
         for key in ("successful_queries", "failed_queries", "pending_queries", "unique_papers"):
             if key in union.get("summary", {}):
                 summary[key] = union["summary"][key]
+    if summary:
         payload["summary"] = summary
     return payload
 

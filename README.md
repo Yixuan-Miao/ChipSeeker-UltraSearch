@@ -23,7 +23,7 @@ When the user requests installation or connection, perform the work with the ava
 3. Read `SKILL.md` at the installed path and follow it in the current conversation. A new chat is not required to connect.
 4. Configure the bundled `scripts/chipseeker_remote.py` using the user-supplied key, preferably through process-scoped `CHIPSEEKER_API_KEY`, and check `quota`. Do not echo credentials or store them in the repository or research output.
 5. For email-only login, use `auth-send`, ask for the verification code, then use `auth-verify`. Retrieve the existing key; do not reset it.
-6. If a topic and output path were also supplied, follow the Skill's scope gate: search actionable directions; clarify overly broad topics first. Otherwise report connection status and balance briefly.
+6. If a topic and output path were also supplied, confirm the search objective and clarify material scope ambiguities before spending search credits. Do not ask again if the user's preference is already clear. Otherwise report connection status and balance briefly.
 
 ```text
 git clone https://github.com/Yixuan-Miao/ChipSeeker-UltraSearch.git
@@ -45,13 +45,13 @@ Your own AI performs query planning, expansion, screening and reporting. This pu
 
 ## Research and Outputs
 
-Broad discovery is the default. An optional focused circuit-review profile prioritizes formal IEEE publications from the preceding ten years whose main contribution is the requested circuit. Explicit dates and source limits apply in both modes. Source-backed decisions and manual exclusions persist across refreshes. Confirmed conference and journal versions appear together, journal first, while RIS keeps the original publications separate. Specialist-source and reference gaps trigger bounded agent-side external checks. The remote service continues to provide retrieval without a server-side LLM.
+Choose coverage to find as much relevant work as possible, or precision for a shortlist of the closest papers. If the prompt is unclear, the agent asks first. Both start with the curated ChipSeeker library, then supplement meaningful gaps with verified external sources unless you request library-only search. Reports show the chosen objective and label where papers were found. Precision alone does not impose IEEE, recency or measurement constraints.
 
 After the initial screen, `research_output.py review-next --workspace WORKSPACE` produces a prioritized follow-up plan. Record selected checks with `--receipt FILE`, then screen newly found candidates before rendering. Index and external checks have independent limits and outcomes; a missing DOI in the index does not close a publisher or citation check.
 
 For a credential-free offline acceptance run, execute `python skills/chipseeker-ultra-search/scripts/verify_circuit_review.py --parent OUTPUT_PARENT`. It generates paired reports from fixed public metadata and original-paper evidence. The installed Skill includes the same verification command and fixture.
 
-For broad prompts such as `ADC` or `CTLE`, the agent asks targeted questions until a useful subdirection emerges. An optional single Lite probe can help identify actual themes. Explicit software trials and broad overviews remain available as bounded, representative searches.
+For ambiguous prompts such as `ADC` or `CTLE`, the agent clarifies the intended direction. An explicit all-band or all-technology survey is a valid goal and is divided into branches. Quick trials remain bounded, representative searches.
 
 For a scoped direction, the agent lays out distinct retrieval questions, learns new terms from titles and abstracts, and follows relevant leads. It does not equate paraphrase count, repeated top hits or an API candidate cap with completeness. Paper facts require source evidence; unknown or failed retrievals remain explicit.
 

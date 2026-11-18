@@ -85,6 +85,36 @@ def test_same_titles_links_priority_partial_status_in_both_formats(tmp_path):
     assert "期间账户已用 +3 次" in html
     assert result["retained_papers"] == 1 and result["partial"]
     assert '<script src=' not in html and '<link rel="stylesheet"' not in html
+    assert "检索目标：" not in markdown and "检索目标：" not in html
+
+
+@pytest.mark.parametrize("goal,label", [
+    ("coverage", "尽可能找全"),
+    ("precision", "精准精选"),
+    ("balanced", "兼顾覆盖与精准"),
+    ("representative", "代表性速查"),
+])
+def test_goal_survives_resume_without_adding_admission_constraints(tmp_path, goal, label):
+    workspace = output.init_workspace(tmp_path, "One research topic")
+    data_dir = workspace / output.DATA_DIR
+    data = payload()
+    data["schema"] = "ultrasearch-screened-papers/v2"
+    data["papers"][0].update(year="2001", publisher="Wiley")
+    data["summary"]["search_goal"] = "stale"
+    (data_dir / "queries.json").write_text(json.dumps({"scope": {"search_goal": goal}}), encoding="utf-8")
+    (data_dir / "papers.json").write_text(json.dumps(data), encoding="utf-8")
+    output.render_workspace(workspace)
+    resumed = output.init_workspace(tmp_path, "One research topic", resume=True)
+    result = output.render_workspace(resumed, overwrite=True)
+    assert resumed == workspace and result["retained_papers"] == 1
+    report = json.loads((data_dir / "report-data.json").read_text(encoding="utf-8"))
+    assert report["summary"]["search_goal"] == goal
+    assert report["review_policy"]["profile"] == "broad_discovery"
+    assert report["review_policy"]["start_date"] is None
+    assert not report["review_policy"]["allowed_publishers"]
+    assert not report["review_policy"]["requirements"]
+    for key in ("markdown", "html"):
+        assert "检索目标：" + label in Path(result[key]).read_text(encoding="utf-8")
 
 
 def test_shared_account_delta_is_not_mislabeled_as_a_run_invoice(tmp_path):

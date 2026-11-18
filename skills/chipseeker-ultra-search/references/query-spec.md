@@ -3,6 +3,7 @@
 ```json
 {
   "schema": "chipseeker-agent-query-spec/v1",
+  "scope": {"direction": "cryogenic InP amplifiers for qubit readout", "search_goal": "coverage"},
   "defaults": {
     "years": "1800:2100",
     "abstract_chars": 0,
@@ -45,7 +46,7 @@ Give every query a unique ID. Use a new ID when its meaning changes. Append new 
 
 Keep the plan at `TOPIC_WORKSPACE/检索数据/queries.json`, the union at `检索数据/union.json`, and the checkpoints at `检索数据/checkpoints/`. The requested output path is the parent of a new `芯寻_简练方向名` topic folder; initialize it with `scripts/research_output.py` as described in [reports.md](reports.md).
 
-The AI may store a compact `scope`, `search_map`, query `rationale` and observed `findings` alongside the existing query fields. These local planning fields are not sent to the API and do not change billing. Use them to keep unresolved research branches visible across rounds, not to generate extra user-facing planning documents. See [search-strategy.md](search-strategy.md).
+Store the agreed objective in `scope.search_goal`: `coverage`, `precision`, `balanced` (both or a bounded compromise), or `representative` (quick trial). Keep it on resume unless the user changes the objective. Record a compact `scope`, `search_map`, query `rationale` and observed `findings` as useful. These local fields are not sent to the API and do not change billing or choose a report admission profile. The reports show the recorded objective. See [search-strategy.md](search-strategy.md).
 
 `max_api_requests` optionally caps the total number of registered query IDs in a plan, including pending, hydration and scope probes. `collect` rejects an oversized plan before sending anything, but still runs every unfinished query in an allowed plan. Other descriptive budget fields are not executable limits. Append only the next authorized batch; preserve previous entries and checkpoints.
 
